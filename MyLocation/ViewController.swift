@@ -10,8 +10,6 @@ import MapKit
 import UIKit
 
 class ViewController: UIViewController {
-    private let mapView = MKMapView()
-    
     private let locationButton: CLLocationButton  = {
         let button = CLLocationButton()
         button.icon = .arrowOutline
@@ -19,22 +17,26 @@ class ViewController: UIViewController {
         return button
     }()
     
+    private let mapView = MKMapView()
     let locationManager = CLLocationManager()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(mapView)
         mapView.addSubview(locationButton)
         
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self,
-                                                               action: #selector(addPin(press:)))
-        longPressRecognizer.minimumPressDuration = 2.0
-        mapView.addGestureRecognizer(longPressRecognizer)
+        addLongPress()
         
         locationButton.addTarget(self,
                                  action: #selector(didTapLocationButton),
                                  for: .touchUpInside)
+    }
+    
+    func addLongPress() {
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self,
+                                                               action: #selector(addPin(press:)))
+        longPressRecognizer.minimumPressDuration = 2.0
+        mapView.addGestureRecognizer(longPressRecognizer)
     }
     
     override func viewDidLayoutSubviews() {
@@ -46,21 +48,43 @@ class ViewController: UIViewController {
                                       height: 60)
     }
     
-    @objc func addPin(press:UIGestureRecognizer) {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setupManager()
+    }
+        
+    func setupManager() {
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest //battery
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    @objc func didTapLocationButton() {
+        locationManager.startUpdatingLocation()
+    }
+    
+    @objc func addPin(press: UIGestureRecognizer) {
         guard press.state == .began else { return }
         print("longPressed")
         
         let touchPoint = press.location(in: mapView)
         let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
         
-        let lastAnnotation = self.mapView.annotations[0]
-        self.mapView.removeAnnotation(lastAnnotation)
+        let lastAnnotations = self.mapView.annotations
+        
+        for lastAnnotation in lastAnnotations {
+                self.mapView.removeAnnotation(lastAnnotation)
+        }
         
         let annotation = MKPointAnnotation()
         annotation.coordinate = newCoordinates
-        
         let location = CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude)
         
+        setTitleToPin(on: location, for: annotation)
+    }
+    
+    func setTitleToPin(on location: CLLocation, for annotation: MKPointAnnotation) {
         CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
             guard error == nil,
                   let placemarks = placemarks else {
@@ -82,26 +106,7 @@ class ViewController: UIViewController {
                 self.mapView.addAnnotation(annotation)
                 print("Problem with the data received from geocoder")
             }
-            
         }
-        
-    }
-    
-    
-    @objc func didTapLocationButton() {
-        locationManager.startUpdatingLocation()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        setupManager()
-    }
-    
-    func setupManager() {
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest //battery
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
     }
 }
 
