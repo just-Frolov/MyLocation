@@ -19,61 +19,76 @@ class ViewController: UIViewController {
         return button
     }()
     
-    private let addPinButton: UIButton  = {
-        let button = UIButton()
-        button.backgroundColor = .systemBlue
-        button.layer.cornerRadius = 12
-        button.setTitle("Add Pin", for: .normal)
-        return button
-    }()
-    
-    private let deletePinButton: UIButton  = {
-        let button = UIButton()
-        button.backgroundColor = .systemRed
-        button.layer.cornerRadius = 12
-        button.setTitle("Del Pin", for: .normal)
-        return button
-    }()
-    
     let locationManager = CLLocationManager()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(mapView)
         mapView.addSubview(locationButton)
-        mapView.addSubview(addPinButton)
-        mapView.addSubview(deletePinButton)
+        
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self,
+                                                               action: #selector(addPin(press:)))
+        longPressRecognizer.minimumPressDuration = 2.0
+        mapView.addGestureRecognizer(longPressRecognizer)
         
         locationButton.addTarget(self,
                                  action: #selector(didTapLocationButton),
-                                 for: .touchUpInside)
-        addPinButton.addTarget(self,
-                                 action: #selector(didTapAddPinButton),
                                  for: .touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         mapView.frame = view.bounds
-        locationButton.frame = CGRect(x: mapView.safeAreaInsets.left + 20,
-                              y: mapView.safeAreaInsets.top + 20,
-                              width: 60,
-                              height: 60)
-        addPinButton.frame = CGRect(x: view.frame.width - 90,
-                                      y: mapView.safeAreaInsets.top + 20,
-                                      width: 70,
+        locationButton.frame = CGRect(x: mapView.frame.width - 70,
+                                      y: mapView.frame.height - 120,
+                                      width: 60,
                                       height: 60)
-        deletePinButton.frame = CGRect(x: view.frame.width - 180,
-                                       y: mapView.safeAreaInsets.top + 20,
-                                       width: 70,
-                                       height: 60)
-    }
-
-    @objc func didTapLocationButton() {
-        locationManager.startUpdatingLocation()
     }
     
-    @objc func didTapAddPinButton() {
+    @objc func addPin(press:UIGestureRecognizer) {
+        guard press.state == .began else { return }
+        print("longPressed")
+        
+        let touchPoint = press.location(in: mapView)
+        let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
+        
+        let lastAnnotation = self.mapView.annotations[0]
+        self.mapView.removeAnnotation(lastAnnotation)
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = newCoordinates
+        
+        let location = CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude)
+        
+        CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
+            guard error == nil,
+                  let placemarks = placemarks else {
+                      print("Reverse geocoder failed with error" + error!.localizedDescription)
+                      return
+                  }
+            
+            if placemarks.count > 0 {
+                let pm = placemarks[0]
+                
+                // not all places have thoroughfare & subThoroughfare so validate those values
+                annotation.title = pm.thoroughfare ?? "" //+ ", " //+ pm.subThoroughfare ?? ""
+                annotation.subtitle = pm.subLocality
+                self.mapView.addAnnotation(annotation)
+                print(pm)
+            }
+            else {
+                annotation.title = "Unknown Place"
+                self.mapView.addAnnotation(annotation)
+                print("Problem with the data received from geocoder")
+            }
+            
+        }
+        
+    }
+    
+    
+    @objc func didTapLocationButton() {
         locationManager.startUpdatingLocation()
     }
     
