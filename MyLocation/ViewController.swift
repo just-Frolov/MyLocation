@@ -4,7 +4,6 @@
 //
 //  Created by Данил Фролов on 20.12.2021.
 //
-import CoreLocationUI
 import MapKit
 import UIKit
 
@@ -12,9 +11,9 @@ class ViewController: UIViewController {
     //MARK: - UI Elements -
     lazy var locationButton: UIButton  = {
         let button = UIButton()
-        let icon = UIImage(systemName: "location")
-        button.backgroundColor = .systemBlue
-        button.layer.cornerRadius = 12
+        let icon = UIImage(systemName: "location.fill")
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 25
         button.setImage(icon, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self,
@@ -28,12 +27,12 @@ class ViewController: UIViewController {
     private let locationManager = CLLocationManager()
     
     //MARK: - Variables -
-    private var isFirstSetRegion = Bool()
+    private var isFirstLocationUpdate = Bool()
     
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        isFirstSetRegion = true
+        isFirstLocationUpdate = true
         
         setSubview()
         setMapViewLocation()
@@ -43,6 +42,7 @@ class ViewController: UIViewController {
     }
     
     //MARK: - Private -
+    //MARK: Set View
     private func setSubview() {
         view.addSubview(mapView)
         mapView.addSubview(locationButton)
@@ -54,7 +54,7 @@ class ViewController: UIViewController {
     
     private func setLocationButtonConstraints() {
         let sizeLocationButton: CGFloat = 50
-        let spaceAtBottomForLocationButton: CGFloat = -25
+        let spaceAtBottomForLocationButton: CGFloat = -30
         let spaceAtRightForLocationButton: CGFloat = -10
         
         locationButton.translatesAutoresizingMaskIntoConstraints = false
@@ -74,6 +74,7 @@ class ViewController: UIViewController {
         locationManager.startUpdatingLocation()
     }
     
+    //MARK: Set for Tap
     private func addPinRecognizer() {
         let longPressRecognizer = UILongPressGestureRecognizer(target: self,
                                                                action: #selector(addPin(press:)))
@@ -88,6 +89,7 @@ class ViewController: UIViewController {
         mapView.setRegion(region, animated: true)
     }
     
+    //MARK: Create & Delete Pin
     @objc private func addPin(press: UIGestureRecognizer) {
         guard press.state == .began else { return }
         print("longPressed")
@@ -108,7 +110,7 @@ class ViewController: UIViewController {
         setTitleToPin(on: location, for: annotation)
     }
     
-    fileprivate func setTitleToPin(on location: CLLocation, for annotation: MKPointAnnotation) {
+    private func setTitleToPin(on location: CLLocation, for annotation: MKPointAnnotation) {
         CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
             if let error = error {
                 print("Reverse geocoder failed with error" + error.localizedDescription)
@@ -117,7 +119,7 @@ class ViewController: UIViewController {
             
             if placemarks!.count > 0 {
                 let placeMark = placemarks!.first!
-                annotation.title = placeMark.thoroughfare ?? "" + ", \(String(describing: placeMark.subThoroughfare))"
+                annotation.title = placeMark.thoroughfare ?? "" //+ ", \(String(describing: placeMark.subThoroughfare))"
                 annotation.subtitle = placeMark.subLocality
                 self.mapView.addAnnotation(annotation)
             } else {
@@ -132,12 +134,12 @@ class ViewController: UIViewController {
 //MARK: - CLLocation Manager Delegate -
 extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if isFirstSetRegion, let location = locations.last?.coordinate {
+        if isFirstLocationUpdate, let location = locations.last?.coordinate {
             let region = MKCoordinateRegion(center: location,
                                             latitudinalMeters: 5000,
                                             longitudinalMeters: 5000)
             mapView.setRegion(region, animated: true)
-            isFirstSetRegion = false
+            isFirstLocationUpdate = false
         }
         
         mapView.showsUserLocation = true
