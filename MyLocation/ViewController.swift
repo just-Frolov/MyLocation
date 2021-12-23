@@ -27,13 +27,19 @@ class ViewController: UIViewController {
     private let mapView = MKMapView()
     private let locationManager = CLLocationManager()
     
+    //MARK: - Variables -
+    private var isFirstSetRegion = Bool()
+    
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        isFirstSetRegion = true
+        
         setSubview()
-        addPinRecognizer()
+        setMapViewLocation()
         setLocationButtonConstraints()
         setupManager()
+        addPinRecognizer()
     }
     
     //MARK: - Private -
@@ -42,17 +48,14 @@ class ViewController: UIViewController {
         mapView.addSubview(locationButton)
     }
     
-    private func addPinRecognizer() {
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self,
-                                                               action: #selector(addPin(press:)))
-        longPressRecognizer.minimumPressDuration = 2.0
-        mapView.addGestureRecognizer(longPressRecognizer)
+    private func setMapViewLocation() {
+        mapView.frame = view.bounds
     }
     
     private func setLocationButtonConstraints() {
-        let sizeLocationButton: CGFloat = 100
-        let spaceAtBottomForLocationButton: CGFloat = -60
-        let spaceAtRightForLocationButton: CGFloat = -100
+        let sizeLocationButton: CGFloat = 50
+        let spaceAtBottomForLocationButton: CGFloat = -25
+        let spaceAtRightForLocationButton: CGFloat = -10
         
         locationButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -71,9 +74,15 @@ class ViewController: UIViewController {
         locationManager.startUpdatingLocation()
     }
     
-    @objc private func didTapLocationButton(locations: [CLLocation]) {
-        guard let location = locations.last?.coordinate else { return }
-        let region = MKCoordinateRegion(center: location,
+    private func addPinRecognizer() {
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self,
+                                                               action: #selector(addPin(press:)))
+        longPressRecognizer.minimumPressDuration = 2.0
+        mapView.addGestureRecognizer(longPressRecognizer)
+    }
+    
+    @objc private func didTapLocationButton() {
+        let region = MKCoordinateRegion(center: mapView.userLocation.coordinate,
                                         latitudinalMeters: 5000,
                                         longitudinalMeters: 5000)
         mapView.setRegion(region, animated: true)
@@ -123,7 +132,16 @@ class ViewController: UIViewController {
 //MARK: - CLLocation Manager Delegate -
 extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        mapView.showsUserLocation = true
+        if isFirstSetRegion {
+            let region = MKCoordinateRegion(center: mapView.userLocation.coordinate,
+                                            latitudinalMeters: 5000,
+                                            longitudinalMeters: 5000)
+            mapView.setRegion(region, animated: true)
+            mapView.showsUserLocation = true
+            isFirstSetRegion = false
+        } else {
+            mapView.showsUserLocation = true
+        }
     }
 }
 
