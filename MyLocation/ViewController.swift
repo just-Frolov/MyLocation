@@ -10,21 +10,20 @@ import UIKit
 class ViewController: UIViewController {
     //MARK: - UI Elements -
     lazy var locationButton: UIButton  = {
-        let button = UIButton()
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         let icon = UIImage(systemName: "location.fill")
         button.backgroundColor = .white
-        button.layer.cornerRadius = 25
+        button.layer.cornerRadius = button.frame.width/2
         button.setImage(icon, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self,
-                                 action: #selector(didTapLocationButton),
-                                 for: .touchUpInside)
+                         action: #selector(didTapLocationButton),
+                         for: .touchUpInside)
         return button
     }()
     
     //MARK: - Private Constants -
     private let mapView = MKMapView()
-    private let locationManager = CLLocationManager()
     
     //MARK: - Variables -
     private var isFirstLocationUpdate = Bool()
@@ -42,10 +41,9 @@ class ViewController: UIViewController {
     }
     
     //MARK: - Private -
-    //MARK: Set View
     private func setSubview() {
-        view.addSubview(mapView)
-        mapView.addSubview(locationButton)
+        self.view = mapView
+        view.addSubview(locationButton)
     }
     
     private func setMapViewLocation() {
@@ -67,14 +65,6 @@ class ViewController: UIViewController {
         ])
     }
     
-    private func setupManager() {
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest //battery
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-    }
-    
-    //MARK: Set for Tap
     private func addPinRecognizer() {
         let longPressRecognizer = UILongPressGestureRecognizer(target: self,
                                                                action: #selector(addPin(press:)))
@@ -89,7 +79,6 @@ class ViewController: UIViewController {
         mapView.setRegion(region, animated: true)
     }
     
-    //MARK: Create & Delete Pin
     @objc private func addPin(press: UIGestureRecognizer) {
         guard press.state == .began else { return }
         print("longPressed")
@@ -117,11 +106,33 @@ class ViewController: UIViewController {
                 return
             }
             
-            if placemarks!.count > 0 {
-                let placeMark = placemarks!.first!
-                annotation.title = placeMark.thoroughfare ?? "" //+ ", \(String(describing: placeMark.subThoroughfare))"
-                annotation.subtitle = placeMark.subLocality
-                self.mapView.addAnnotation(annotation)
+            var annotationTitle = String()
+            var annotationSubTitle = String()
+            let places = placemarks ?? []
+            
+            if places.count > 0 {
+                if let placeMark = places.first {
+                    if let street = placeMark.thoroughfare {
+                        annotationTitle += street
+                    }
+                    if let country = placeMark.country {
+                        annotationSubTitle += country
+                    }
+                    
+                    if !annotationTitle.isEmpty {
+                        annotation.title = annotationTitle
+                    } else {
+                        //lon lan
+                    }
+                    
+                    if !annotationTitle.isEmpty {
+                        annotation.subtitle = annotationSubTitle
+                    } else {
+                        //lon lan
+                    }
+                    
+                    self.mapView.addAnnotation(annotation)
+                }
             } else {
                 annotation.title = "Unknown Place"
                 self.mapView.addAnnotation(annotation)
