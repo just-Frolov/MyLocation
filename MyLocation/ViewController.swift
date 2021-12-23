@@ -132,16 +132,15 @@ class ViewController: UIViewController {
 //MARK: - CLLocation Manager Delegate -
 extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if isFirstSetRegion {
-            let region = MKCoordinateRegion(center: mapView.userLocation.coordinate,
+        if isFirstSetRegion, let location = locations.last?.coordinate {
+            let region = MKCoordinateRegion(center: location,
                                             latitudinalMeters: 5000,
                                             longitudinalMeters: 5000)
             mapView.setRegion(region, animated: true)
-            mapView.showsUserLocation = true
             isFirstSetRegion = false
-        } else {
-            mapView.showsUserLocation = true
         }
+        
+        mapView.showsUserLocation = true
     }
 }
 
