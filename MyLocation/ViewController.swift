@@ -4,67 +4,82 @@
 //
 //  Created by Данил Фролов on 20.12.2021.
 //
-
 import CoreLocationUI
 import MapKit
 import UIKit
 
 class ViewController: UIViewController {
-    private let locationButton: CLLocationButton  = {
-        let button = CLLocationButton()
-        button.icon = .arrowOutline
-        button.cornerRadius = 12
+    //MARK: - UI Elements -
+    lazy var locationButton: UIButton  = {
+        let button = UIButton()
+        let icon = UIImage(systemName: "location")
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = 12
+        button.setImage(icon, for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.addTarget(self,
+                                 action: #selector(didTapLocationButton),
+                                 for: .touchUpInside)
         return button
     }()
     
+    //MARK: - Private Constants -
     private let mapView = MKMapView()
-    let locationManager = CLLocationManager()
+    private let locationManager = CLLocationManager()
     
+    //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(mapView)
-        mapView.addSubview(locationButton)
-        
-        addLongPress()
-        
-        locationButton.addTarget(self,
-                                 action: #selector(didTapLocationButton),
-                                 for: .touchUpInside)
+        setSubview()
+        addPinRecognizer()
+        setLocationButtonConstraints()
+        setupManager()
     }
     
-    func addLongPress() {
+    //MARK: - Private -
+    private func setSubview() {
+        view.addSubview(mapView)
+        mapView.addSubview(locationButton)
+    }
+    
+    private func addPinRecognizer() {
         let longPressRecognizer = UILongPressGestureRecognizer(target: self,
                                                                action: #selector(addPin(press:)))
         longPressRecognizer.minimumPressDuration = 2.0
         mapView.addGestureRecognizer(longPressRecognizer)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        mapView.frame = view.bounds
-        locationButton.frame = CGRect(x: mapView.frame.width - 70,
-                                      y: mapView.frame.height - 120,
-                                      width: 60,
-                                      height: 60)
+    private func setLocationButtonConstraints() {
+        let sizeLocationButton: CGFloat = 100
+        let spaceAtBottomForLocationButton: CGFloat = -60
+        let spaceAtRightForLocationButton: CGFloat = -100
+        
+        locationButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            locationButton.widthAnchor.constraint(equalToConstant: sizeLocationButton),
+            locationButton.heightAnchor.constraint(equalToConstant: sizeLocationButton),
+            locationButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: spaceAtBottomForLocationButton),
+            locationButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: spaceAtRightForLocationButton)
+        ])
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        setupManager()
-    }
-        
-    func setupManager() {
+    private func setupManager() {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest //battery
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
     
-    @objc func didTapLocationButton() {
-        locationManager.startUpdatingLocation()
+    @objc private func didTapLocationButton(locations: [CLLocation]) {
+        guard let location = locations.last?.coordinate else { return }
+        let region = MKCoordinateRegion(center: location,
+                                        latitudinalMeters: 5000,
+                                        longitudinalMeters: 5000)
+        mapView.setRegion(region, animated: true)
     }
     
-    @objc func addPin(press: UIGestureRecognizer) {
+    @objc private func addPin(press: UIGestureRecognizer) {
         guard press.state == .began else { return }
         print("longPressed")
         
@@ -84,24 +99,19 @@ class ViewController: UIViewController {
         setTitleToPin(on: location, for: annotation)
     }
     
-    func setTitleToPin(on location: CLLocation, for annotation: MKPointAnnotation) {
+    fileprivate func setTitleToPin(on location: CLLocation, for annotation: MKPointAnnotation) {
         CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
-            guard error == nil,
-                  let placemarks = placemarks else {
-                      print("Reverse geocoder failed with error" + error!.localizedDescription)
-                      return
-                  }
-            
-            if placemarks.count > 0 {
-                let pm = placemarks[0]
-                
-                // not all places have thoroughfare & subThoroughfare so validate those values
-                annotation.title = pm.thoroughfare ?? "" //+ ", " //+ pm.subThoroughfare ?? ""
-                annotation.subtitle = pm.subLocality
-                self.mapView.addAnnotation(annotation)
-                print(pm)
+            if let error = error {
+                print("Reverse geocoder failed with error" + error.localizedDescription)
+                return
             }
-            else {
+            
+            if placemarks!.count > 0 {
+                let placeMark = placemarks!.first!
+                annotation.title = placeMark.thoroughfare ?? "" + ", \(String(describing: placeMark.subThoroughfare))"
+                annotation.subtitle = placeMark.subLocality
+                self.mapView.addAnnotation(annotation)
+            } else {
                 annotation.title = "Unknown Place"
                 self.mapView.addAnnotation(annotation)
                 print("Problem with the data received from geocoder")
@@ -110,14 +120,9 @@ class ViewController: UIViewController {
     }
 }
 
+//MARK: - CLLocation Manager Delegate -
 extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last?.coordinate  else { return }
-        self.locationManager.stopUpdatingLocation()
-        let region = MKCoordinateRegion(center: location,
-                                        latitudinalMeters: 5000,
-                                        longitudinalMeters: 5000)
-        mapView.setRegion(region, animated: true)
         mapView.showsUserLocation = true
     }
 }
