@@ -6,10 +6,10 @@
 //
 
 import Foundation
-import MapKit
+import CoreLocation
 
 protocol CustomLocationManagerDelegate: AnyObject {
-    func customLocationManager(didUpdate locations: [CLLocation])
+    func didUpdateLocation(_ location: CLLocation)
 }
 
 class CustomLocationManager: NSObject, CLLocationManagerDelegate {
@@ -21,21 +21,20 @@ class CustomLocationManager: NSObject, CLLocationManagerDelegate {
     weak var delegate: CustomLocationManagerDelegate?
 
     //MARK: - Life Cycle -
-    private override init()
-    {
+    private override init() {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
     //MARK: - Internal -
-    func startTracking()
-    {
+    func startTracking() {
         locationManager.startUpdatingLocation()
-        locationManager.startUpdatingHeading()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        delegate?.customLocationManager(didUpdate: locations)
+        if let currentLocation = locations.last {
+            delegate?.didUpdateLocation(currentLocation)
+        }
     }
 }

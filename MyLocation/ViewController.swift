@@ -26,13 +26,12 @@ class ViewController: UIViewController {
     private let mapView = MKMapView()
     
     //MARK: - Variables -
-    var currentLocation: CLLocation? {
+    private var currentLocation: CLLocation? {
         didSet {
-            if oldValue == nil && currentLocation != nil {
-                let region = MKCoordinateRegion(center: currentLocation!.coordinate, //???
-                                                latitudinalMeters: 5000,
-                                                longitudinalMeters: 5000)
-                mapView.setRegion(region, animated: true)
+            if let location = currentLocation,
+                oldValue == nil {
+                setCurrentRegion(location)
+                mapView.showsUserLocation = true
             }
         }
     }
@@ -40,9 +39,8 @@ class ViewController: UIViewController {
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        CustomLocationManager.shared.startTracking()
-        CustomLocationManager.shared.delegate = self
         addSubviews()
+        setLocationManager()
         setMapViewLocation()
         setLocationButtonConstraints()
         addPinGestureRecognizer()
@@ -52,6 +50,11 @@ class ViewController: UIViewController {
     private func addSubviews() {
         self.view = mapView
         view.addSubview(locationButton)
+    }
+    
+    private func setLocationManager() {
+        CustomLocationManager.shared.delegate = self
+        CustomLocationManager.shared.startTracking()
     }
     
     private func setMapViewLocation() {
@@ -81,7 +84,13 @@ class ViewController: UIViewController {
     }
     
     @objc private func didTapLocationButton() {
-        let region = MKCoordinateRegion(center: mapView.userLocation.coordinate,
+        if let location = currentLocation {
+            setCurrentRegion(location)
+        }
+    }
+    
+    private func setCurrentRegion(_ location: CLLocation) {
+        let region = MKCoordinateRegion(center: location.coordinate,
                                         latitudinalMeters: 5000,
                                         longitudinalMeters: 5000)
         mapView.setRegion(region, animated: true)
@@ -118,8 +127,8 @@ class ViewController: UIViewController {
                 return
             }
             
-            var annotationTitle = String()
-            var annotationSubTitle = String()
+            var annotationTitle = ""
+            var annotationSubTitle = ""
             let places = placemarks ?? []
             
             if !places.isEmpty {
@@ -127,14 +136,16 @@ class ViewController: UIViewController {
                 if let street = placeMark.thoroughfare {
                     annotationTitle += street
                 }
-                if let house = placeMark.subThoroughfare {
-                    annotationTitle += house
+                if var house = placeMark.subThoroughfare {
+                    //annotationTitle += annotationTitle.isEmpty ? house : house.add(prefix: ", ")
+                    annotationTitle += house.addPrefixIfNeeded(", ", requiredPrefix: house)
                 }
                 if let country = placeMark.country {
                     annotationSubTitle += country
                 }
-                if let city = placeMark.subLocality {
-                    annotationSubTitle += city
+                if var city = placeMark.subLocality {
+                    //annotationSubTitle += annotationSubTitle.isEmpty ? city : city.add(prefix: ", ")
+                    annotationTitle += city.addPrefixIfNeeded(", ", requiredPrefix: city)
                 }
  
                 annotation.title = annotationTitle.isEmpty ? self.defaultAnnotationTitle(for: location) : annotationTitle
@@ -148,22 +159,23 @@ class ViewController: UIViewController {
         }
     }
     
-    func defaultAnnotationTitle(for location: CLLocation) -> String {
+    private func defaultAnnotationTitle(for location: CLLocation) -> String {
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
         return "\(latitude) + \(longitude)"
     }
 }
 
-//MARK: - CLLocation Manager Delegate -
+//MARK: - Extension -
 extension ViewController: CustomLocationManagerDelegate {
-    func customLocationManager(didUpdate locations: [CLLocation]) {
-        setCurrentRegion(locations)
-        mapView.showsUserLocation = true
-    }
-    
-    func setCurrentRegion(_ locations: [CLLocation]) {
-        currentLocation = locations.last
+    func didUpdateLocation(_ location: CLLocation) {
+        currentLocation = location
     }
 }
 
+extension String {
+    mutating func addPrefixIfNeeded(_ prefix: String, requiredPrefix: String) -> String {
+        guard !requiredPrefix.isEmpty else { return "" }
+        return prefix + self
+    }
+}
