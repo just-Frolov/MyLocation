@@ -31,7 +31,6 @@ class ViewController: UIViewController {
             if let location = currentLocation,
                 oldValue == nil {
                 setCurrentRegion(location)
-                mapView.showsUserLocation = true
             }
         }
     }
@@ -39,26 +38,23 @@ class ViewController: UIViewController {
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        addSubviews()
+        setupView()
         setLocationManager()
-        setMapViewLocation()
         setLocationButtonConstraints()
         addPinGestureRecognizer()
     }
     
     //MARK: - Private -
-    private func addSubviews() {
+    private func setupView() {
+        mapView.frame = view.bounds
         self.view = mapView
         view.addSubview(locationButton)
+        mapView.showsUserLocation = true
     }
     
     private func setLocationManager() {
         CustomLocationManager.shared.delegate = self
         CustomLocationManager.shared.startTracking()
-    }
-    
-    private func setMapViewLocation() {
-        mapView.frame = view.bounds
     }
     
     private func setLocationButtonConstraints() {
@@ -137,13 +133,13 @@ class ViewController: UIViewController {
                     annotationTitle += street
                 }
                 if var house = placeMark.subThoroughfare {
-                    annotationTitle += house.addPrefixIfNeeded(", ", requiredPrefix: house)
+                    annotationTitle += house.addingDevidingPrefixIfNeeded(previousValue: annotationTitle)
                 }
                 if let country = placeMark.country {
                     annotationSubTitle += country
                 }
                 if var city = placeMark.subLocality {
-                    annotationTitle += city.addPrefixIfNeeded(", ", requiredPrefix: city)
+                    annotationTitle += city.addingDevidingPrefixIfNeeded(previousValue: annotationSubTitle)
                 }
  
                 annotation.title = annotationTitle.isEmpty ? self.defaultAnnotationTitle(for: location) : annotationTitle
@@ -175,5 +171,10 @@ extension String {
     mutating func addPrefixIfNeeded(_ prefix: String, requiredPrefix: String) -> String {
         guard !requiredPrefix.isEmpty else { return "" }
         return prefix + self
+    }
+    
+    mutating func addingDevidingPrefixIfNeeded(previousValue: String) -> String {
+        guard !previousValue.isEmpty else { return self }
+        return ", " + self
     }
 }
