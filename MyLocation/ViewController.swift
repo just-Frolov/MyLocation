@@ -10,7 +10,7 @@ import UIKit
 class ViewController: UIViewController {
     //MARK: - UI Elements -
     lazy var locationButton: UIButton  = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         let icon = UIImage(systemName: "location.fill")
         button.backgroundColor = .white
         button.layer.cornerRadius = button.frame.width/2
@@ -26,22 +26,30 @@ class ViewController: UIViewController {
     private let mapView = MKMapView()
     
     //MARK: - Variables -
-    private var isFirstLocationUpdate = Bool()
+    var currentLocation: CLLocation? {
+        didSet {
+            if oldValue == nil && currentLocation != nil {
+                let region = MKCoordinateRegion(center: currentLocation!.coordinate, //???
+                                                latitudinalMeters: 5000,
+                                                longitudinalMeters: 5000)
+                mapView.setRegion(region, animated: true)
+            }
+        }
+    }
     
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        isFirstLocationUpdate = true
-        
-        setSubview()
+        CustomLocationManager.shared.startTracking()
+        CustomLocationManager.shared.delegate = self
+        addSubviews()
         setMapViewLocation()
         setLocationButtonConstraints()
-        setupManager()
-        addPinRecognizer()
+        addPinGestureRecognizer()
     }
     
     //MARK: - Private -
-    private func setSubview() {
+    private func addSubviews() {
         self.view = mapView
         view.addSubview(locationButton)
     }
@@ -65,10 +73,10 @@ class ViewController: UIViewController {
         ])
     }
     
-    private func addPinRecognizer() {
+    private func addPinGestureRecognizer() {
         let longPressRecognizer = UILongPressGestureRecognizer(target: self,
                                                                action: #selector(addPin(press:)))
-        longPressRecognizer.minimumPressDuration = 2.0
+        longPressRecognizer.minimumPressDuration = 1.0
         mapView.addGestureRecognizer(longPressRecognizer)
     }
     
@@ -100,7 +108,11 @@ class ViewController: UIViewController {
     }
     
     private func setTitleToPin(on location: CLLocation, for annotation: MKPointAnnotation) {
-        CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, error in
+            guard let self = self else {
+                return
+            }
+            
             if let error = error {
                 print("Reverse geocoder failed with error" + error.localizedDescription)
                 return
@@ -110,50 +122,48 @@ class ViewController: UIViewController {
             var annotationSubTitle = String()
             let places = placemarks ?? []
             
-            if places.count > 0 {
-                if let placeMark = places.first {
-                    if let street = placeMark.thoroughfare {
-                        annotationTitle += street
-                    }
-                    if let country = placeMark.country {
-                        annotationSubTitle += country
-                    }
-                    
-                    if !annotationTitle.isEmpty {
-                        annotation.title = annotationTitle
-                    } else {
-                        //lon lan
-                    }
-                    
-                    if !annotationTitle.isEmpty {
-                        annotation.subtitle = annotationSubTitle
-                    } else {
-                        //lon lan
-                    }
-                    
-                    self.mapView.addAnnotation(annotation)
+            if !places.isEmpty {
+                guard let placeMark = places.first else { return }
+                if let street = placeMark.thoroughfare {
+                    annotationTitle += street
                 }
-            } else {
-                annotation.title = "Unknown Place"
+                if let house = placeMark.subThoroughfare {
+                    annotationTitle += house
+                }
+                if let country = placeMark.country {
+                    annotationSubTitle += country
+                }
+                if let city = placeMark.subLocality {
+                    annotationSubTitle += city
+                }
+ 
+                annotation.title = annotationTitle.isEmpty ? self.defaultAnnotationTitle(for: location) : annotationTitle
+                annotation.subtitle = annotationSubTitle
+
                 self.mapView.addAnnotation(annotation)
-                print("Problem with the data received from geocoder")
+            } else {
+                annotation.title = self.defaultAnnotationTitle(for: location)
+                self.mapView.addAnnotation(annotation)
             }
         }
+    }
+    
+    func defaultAnnotationTitle(for location: CLLocation) -> String {
+        let latitude = location.coordinate.latitude
+        let longitude = location.coordinate.longitude
+        return "\(latitude) + \(longitude)"
     }
 }
 
 //MARK: - CLLocation Manager Delegate -
-extension ViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if isFirstLocationUpdate, let location = locations.last?.coordinate {
-            let region = MKCoordinateRegion(center: location,
-                                            latitudinalMeters: 5000,
-                                            longitudinalMeters: 5000)
-            mapView.setRegion(region, animated: true)
-            isFirstLocationUpdate = false
-        }
-        
+extension ViewController: CustomLocationManagerDelegate {
+    func customLocationManager(didUpdate locations: [CLLocation]) {
+        setCurrentRegion(locations)
         mapView.showsUserLocation = true
+    }
+    
+    func setCurrentRegion(_ locations: [CLLocation]) {
+        currentLocation = locations.last
     }
 }
 

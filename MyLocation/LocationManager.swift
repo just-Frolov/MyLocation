@@ -6,31 +6,36 @@
 //
 
 import Foundation
-import CoreLocation
+import MapKit
 
-/*
- 
- */
-class LocationManager {
-    var currentLocation: CLLocation? {
-        didSet {
-            if oldValue == nil && currentLocation != nil {
-                
-            }
-        }
-    }
-    
-    private func setupManager() {
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest //battery
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-    }
+protocol CustomLocationManagerDelegate: AnyObject {
+    func customLocationManager(didUpdate locations: [CLLocation])
 }
 
-class UserPresenter {
-    var shared = UserPresenter()
+class CustomLocationManager: NSObject, CLLocationManagerDelegate {
+    //MARK: - Private Constants -
+    static let shared = CustomLocationManager()
+
+    //MARK: - Variables -
+    private var locationManager = CLLocationManager()
+    weak var delegate: CustomLocationManagerDelegate?
+
+    //MARK: - Life Cycle -
+    private override init()
+    {
+        super.init()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    }
     
+    //MARK: - Internal -
+    func startTracking()
+    {
+        locationManager.startUpdatingLocation()
+        locationManager.startUpdatingHeading()
+    }
     
-    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        delegate?.customLocationManager(didUpdate: locations)
+    }
 }
