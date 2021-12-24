@@ -137,14 +137,12 @@ class ViewController: UIViewController {
                     annotationTitle += street
                 }
                 if var house = placeMark.subThoroughfare {
-                    //annotationTitle += annotationTitle.isEmpty ? house : house.add(prefix: ", ")
                     annotationTitle += house.addPrefixIfNeeded(", ", requiredPrefix: house)
                 }
                 if let country = placeMark.country {
                     annotationSubTitle += country
                 }
                 if var city = placeMark.subLocality {
-                    //annotationSubTitle += annotationSubTitle.isEmpty ? city : city.add(prefix: ", ")
                     annotationTitle += city.addPrefixIfNeeded(", ", requiredPrefix: city)
                 }
  
