@@ -4,33 +4,21 @@
 //
 //  Created by Данил Фролов on 20.12.2021.
 //
-import MapKit
+import GoogleMaps
+import GooglePlaces
 import UIKit
 
 class ViewController: UIViewController {
-    //MARK: - UI Elements -
-    lazy var locationButton: UIButton  = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-        let icon = UIImage(systemName: "location.fill")
-        button.backgroundColor = .white
-        button.layer.cornerRadius = button.frame.width/2
-        button.setImage(icon, for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        button.addTarget(self,
-                         action: #selector(didTapLocationButton),
-                         for: .touchUpInside)
-        return button
-    }()
-    
-    //MARK: - Private Constants -
-    private let mapView = MKMapView()
-    
     //MARK: - Variables -
+    private var mapView = GMSMapView()
+    private var placesClient: GMSPlacesClient!
+    
     private var currentLocation: CLLocation? {
         didSet {
             if let location = currentLocation,
-                oldValue == nil {
-                setCurrentRegion(location)
+               oldValue == nil {
+                setCurrentLocation(location)
+                mapView.isHidden = false
             }
         }
     }
@@ -38,18 +26,34 @@ class ViewController: UIViewController {
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
+        createMapWithDefaultLocation()
+        setMapView()
+        addMapView()
         setLocationManager()
-        setLocationButtonConstraints()
-        addPinGestureRecognizer()
+        setPlacesClient()
     }
     
     //MARK: - Private -
-    private func setupView() {
-        mapView.frame = view.bounds
-        self.view = mapView
-        view.addSubview(locationButton)
-        mapView.showsUserLocation = true
+    private func createMapWithDefaultLocation() {
+        let defaultLocation = CLLocation(latitude: -33.869405, longitude: 151.199)
+        
+        //        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
+                                              longitude: defaultLocation.coordinate.longitude,
+                                              zoom: 15)
+        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
+    }
+    
+    private func setMapView() {
+        mapView.settings.myLocationButton = true
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView.isMyLocationEnabled = true
+        mapView.delegate = self
+    }
+    
+    private func addMapView() {
+        view.addSubview(mapView)
+        mapView.isHidden = true
     }
     
     private func setLocationManager() {
@@ -57,106 +61,17 @@ class ViewController: UIViewController {
         CustomLocationManager.shared.startTracking()
     }
     
-    private func setLocationButtonConstraints() {
-        let sizeLocationButton: CGFloat = 50
-        let spaceAtBottomForLocationButton: CGFloat = -30
-        let spaceAtRightForLocationButton: CGFloat = -10
-        
-        locationButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            locationButton.widthAnchor.constraint(equalToConstant: sizeLocationButton),
-            locationButton.heightAnchor.constraint(equalToConstant: sizeLocationButton),
-            locationButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: spaceAtBottomForLocationButton),
-            locationButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: spaceAtRightForLocationButton)
-        ])
+    private func setPlacesClient() {
+        placesClient = GMSPlacesClient.shared()
     }
     
-    private func addPinGestureRecognizer() {
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self,
-                                                               action: #selector(addPin(press:)))
-        longPressRecognizer.minimumPressDuration = 1.0
-        mapView.addGestureRecognizer(longPressRecognizer)
-    }
-    
-    @objc private func didTapLocationButton() {
-        if let location = currentLocation {
-            setCurrentRegion(location)
-        }
-    }
-    
-    private func setCurrentRegion(_ location: CLLocation) {
-        let region = MKCoordinateRegion(center: location.coordinate,
-                                        latitudinalMeters: 5000,
-                                        longitudinalMeters: 5000)
-        mapView.setRegion(region, animated: true)
-    }
-    
-    @objc private func addPin(press: UIGestureRecognizer) {
-        guard press.state == .began else { return }
-        print("longPressed")
-        
-        let touchPoint = press.location(in: mapView)
-        let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
-        
-        let lastAnnotations = self.mapView.annotations
-        
-        for lastAnnotation in lastAnnotations {
-                self.mapView.removeAnnotation(lastAnnotation)
-        }
-        
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = newCoordinates
-        let location = CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude)
-        
-        setTitleToPin(on: location, for: annotation)
-    }
-    
-    private func setTitleToPin(on location: CLLocation, for annotation: MKPointAnnotation) {
-        CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, error in
-            guard let self = self else {
-                return
-            }
-            
-            if let error = error {
-                print("Reverse geocoder failed with error" + error.localizedDescription)
-                return
-            }
-            
-            var annotationTitle = ""
-            var annotationSubTitle = ""
-            let places = placemarks ?? []
-            
-            if !places.isEmpty {
-                guard let placeMark = places.first else { return }
-                if let street = placeMark.thoroughfare {
-                    annotationTitle += street
-                }
-                if var house = placeMark.subThoroughfare {
-                    annotationTitle += house.addingDevidingPrefixIfNeeded(previousValue: annotationTitle)
-                }
-                if let country = placeMark.country {
-                    annotationSubTitle += country
-                }
-                if var city = placeMark.subLocality {
-                    annotationTitle += city.addingDevidingPrefixIfNeeded(previousValue: annotationSubTitle)
-                }
- 
-                annotation.title = annotationTitle.isEmpty ? self.defaultAnnotationTitle(for: location) : annotationTitle
-                annotation.subtitle = annotationSubTitle
-
-                self.mapView.addAnnotation(annotation)
-            } else {
-                annotation.title = self.defaultAnnotationTitle(for: location)
-                self.mapView.addAnnotation(annotation)
-            }
-        }
-    }
-    
-    private func defaultAnnotationTitle(for location: CLLocation) -> String {
-        let latitude = location.coordinate.latitude
-        let longitude = location.coordinate.longitude
-        return "\(latitude) + \(longitude)"
+    private func setCurrentLocation(_ location: CLLocation) {
+        // let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let coordinate = location.coordinate
+        let camera = GMSCameraPosition.camera(withLatitude: coordinate.latitude,
+                                              longitude: coordinate.longitude,
+                                              zoom: 15)
+        mapView.animate(to: camera)
     }
 }
 
@@ -167,14 +82,31 @@ extension ViewController: CustomLocationManagerDelegate {
     }
 }
 
-extension String {
-    mutating func addPrefixIfNeeded(_ prefix: String, requiredPrefix: String) -> String {
-        guard !requiredPrefix.isEmpty else { return "" }
-        return prefix + self
+extension ViewController: GMSMapViewDelegate {
+    func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
+        mapView.clear()
+        let position = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let marker = GMSMarker(position: position)
+        setTitle(to: marker)
+        marker.map = mapView
     }
     
-    mutating func addingDevidingPrefixIfNeeded(previousValue: String) -> String {
-        guard !previousValue.isEmpty else { return self }
-        return ", " + self
+    func setTitle(to marker: GMSMarker) {
+        let placeFields: GMSPlaceField = [.name, .formattedAddress]
+        placesClient.findPlaceLikelihoodsFromCurrentLocation(withPlaceFields: placeFields) { (placeLikelihoods, error) in
+            guard error == nil else {
+                print("Current place error: \(error?.localizedDescription ?? "")")
+                return
+            }
+            
+            guard let place = placeLikelihoods?.first?.place else {
+                marker.title = "No current place"
+                marker.snippet = ""
+                return
+            }
+            
+            marker.title = place.name
+            marker.snippet = place.formattedAddress
+        }
     }
 }
