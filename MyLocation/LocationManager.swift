@@ -13,7 +13,7 @@ protocol CustomLocationManagerDelegate: AnyObject {
 }
 
 class CustomLocationManager: NSObject, CLLocationManagerDelegate {
-    //MARK: - Private Constants -
+    //MARK: - Static Constants -
     static let shared = CustomLocationManager()
 
     //MARK: - Variables -

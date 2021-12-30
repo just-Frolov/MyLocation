@@ -36,8 +36,6 @@ class ViewController: UIViewController {
     //MARK: - Private -
     private func createMapWithDefaultLocation() {
         let defaultLocation = CLLocation(latitude: -33.869405, longitude: 151.199)
-        
-        //        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
                                               longitude: defaultLocation.coordinate.longitude,
                                               zoom: 15)
@@ -66,7 +64,6 @@ class ViewController: UIViewController {
     }
     
     private func setCurrentLocation(_ location: CLLocation) {
-        // let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let coordinate = location.coordinate
         let camera = GMSCameraPosition.camera(withLatitude: coordinate.latitude,
                                               longitude: coordinate.longitude,
