@@ -11,7 +11,7 @@ import GooglePlaces
 class MapViewManager {
     private let apiKey = "AIzaSyDCA2pdlOV7pMWTVRGsKLaYYKPJxl1XC5g"
     
-    func setApiKey() {
+    private func setApiKey() {
         GMSServices.provideAPIKey(apiKey)
         GMSPlacesClient.provideAPIKey(apiKey)
     }

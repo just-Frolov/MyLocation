@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension ViewController {
+extension MapViewController {
     typealias EmptyBlock = () -> Void
     
     func alertAddAdress(completionHanler: EmptyBlock) {

@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MapViewController.swift
 //  MyLocation
 //
 //  Created by Данил Фролов on 20.12.2021.
@@ -8,7 +8,24 @@ import GoogleMaps
 import GooglePlaces
 import UIKit
 
-class ViewController: UIViewController {
+class MapViewController: UIViewController {
+    
+    //MARK: - UI Elements -
+    lazy var nearbyPlacesButton: UIButton  = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        let icon = UIImage(systemName: "doc.plaintext.fill")
+        button.backgroundColor = .white
+        button.layer.cornerRadius = button.frame.width/2
+        button.setImage(icon, for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.addTarget(self,
+                         action: #selector(wasPressedNearbyPlacesButton),
+                         for: .touchUpInside)
+        return button
+    }()
+    
+    private let searchRadius: Double = 1000
+
     //MARK: - Variables -
     private var mapView = GMSMapView()
     private var placesClient: GMSPlacesClient!
@@ -28,7 +45,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         createMapWithDefaultLocation()
         setMapView()
-        addMapView()
+        setupSubView()
+        setNearbyPlacesButtonConstraints()
         setLocationManager()
         setPlacesClient()
     }
@@ -49,9 +67,25 @@ class ViewController: UIViewController {
         mapView.delegate = self
     }
     
-    private func addMapView() {
+    private func setupSubView() {
         view.addSubview(mapView)
+        view.addSubview(nearbyPlacesButton)
         mapView.isHidden = true
+    }
+    
+    private func setNearbyPlacesButtonConstraints() {
+        let sizeNearbyPlacesButton: CGFloat = 50
+        let spaceAtTopForNearbyPlacesButton: CGFloat = 30
+        let spaceAtRightForNearbyPlacesButton: CGFloat = -10
+        
+        nearbyPlacesButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            nearbyPlacesButton.widthAnchor.constraint(equalToConstant: sizeNearbyPlacesButton),
+            nearbyPlacesButton.heightAnchor.constraint(equalToConstant: sizeNearbyPlacesButton),
+            nearbyPlacesButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: spaceAtTopForNearbyPlacesButton),
+            nearbyPlacesButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: spaceAtRightForNearbyPlacesButton)
+        ])
     }
     
     private func setLocationManager() {
@@ -70,16 +104,24 @@ class ViewController: UIViewController {
                                               zoom: 15)
         mapView.animate(to: camera)
     }
+    
+    @objc func wasPressedNearbyPlacesButton() {
+        let vc = NearbyPlacesViewController()
+        vc.title = "Nearby Places"
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: false)
+    }
 }
 
 //MARK: - Extension -
-extension ViewController: CustomLocationManagerDelegate {
+extension MapViewController: CustomLocationManagerDelegate {
     func didUpdateLocation(_ location: CLLocation) {
         currentLocation = location
     }
 }
 
-extension ViewController: GMSMapViewDelegate {
+extension MapViewController: GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         mapView.clear()
         let position = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)

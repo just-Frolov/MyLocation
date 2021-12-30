@@ -1,5 +1,5 @@
 //
-//  LocationManager.swift
+//  CustomLocationManager.swift
 //  MyLocation
 //
 //  Created by Данил Фролов on 23.12.2021.
