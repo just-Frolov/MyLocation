@@ -14,13 +14,14 @@ struct PlacesManager {
     
     //MARK: - Private Constants -
     private let baseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-    private let typeString = "?type=restaurant"
+    private let apiKeyString = "?key=AIzaSyDCA2pdlOV7pMWTVRGsKLaYYKPJxl1XC5g"
+    private let typeString = "&type=restaurant"
     private let radiusString = "&radius=1500"
     
     //MARK: - Public -
     public func getPlaces(for location: String, completion: @escaping (Result<[Places], Error>) -> Void) {
-        let urlString = baseURL + typeString + radiusString + location
-        
+        let urlString = baseURL + apiKeyString + typeString + radiusString + location
+       
         AF.request(urlString).responseJSON { responce in
             guard responce.error == nil else {
                 completion(.failure(RequestError.failedResponseJSON))

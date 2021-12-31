@@ -107,10 +107,12 @@ class MapViewController: UIViewController {
     
     @objc func wasPressedNearbyPlacesButton() {
         let vc = NearbyPlacesViewController()
-        vc.title = "Nearby Places"
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: false)
+        if let latitude = currentLocation?.coordinate.latitude,
+              let longitude = currentLocation?.coordinate.longitude {
+            let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
+            vc.currentLocation = coordinateString
+        }
+        present(vc, animated: false)
     }
 }
 

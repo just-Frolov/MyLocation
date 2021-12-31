@@ -11,7 +11,7 @@ import JGProgressHUD
 class NearbyPlacesViewController: UIViewController {
     
     //MARK: - UI Elements -
-    private let tableView: UITableView = {
+    lazy var tableView: UITableView = {
         let table = UITableView()
         table.isHidden = true
         table.register(PlacesTableViewCell.self,
@@ -23,7 +23,7 @@ class NearbyPlacesViewController: UIViewController {
         let label = UILabel()
         label.text = "No Places!"
         label.textAlignment = .center
-        label.textColor = .gray
+        label.textColor = .systemMint
         label.font = .systemFont(ofSize: 21, weight: .medium)
         label.isHidden = true
         return label
@@ -32,13 +32,16 @@ class NearbyPlacesViewController: UIViewController {
     //MARK: - Private Constans -
     private let spinner = JGProgressHUD(style: .dark)
     
-    //MARK: - Private Variables -
+    //MARK: - Variables -
+    public var currentLocation: String?
     private var places: [Places]!
     
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
         setupSubView()
+        setNoPlacesLabelConstraints()
         showSpinner()
         fetchPlaces()
     }
@@ -53,15 +56,26 @@ class NearbyPlacesViewController: UIViewController {
         spinner.show(in: view)
     }
     
-    private func setupTableView() {
-        tableView.frame = view.bounds
-        tableView.delegate = self
-        tableView.dataSource = self
+    private func setNoPlacesLabelConstraints() {
+        let sizeNoPlacesLabel: CGFloat = 100
+        
+        noPlacesLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            noPlacesLabel.widthAnchor.constraint(equalToConstant: sizeNoPlacesLabel),
+            noPlacesLabel.heightAnchor.constraint(equalToConstant: sizeNoPlacesLabel),
+            noPlacesLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            noPlacesLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
+        ])
     }
     
-    //TODO:
     private func fetchPlaces() {
-        PlacesManager.shared.getPlaces(for: "&location=-33.8670522%2C151.1957362") { [weak self] result in
+        guard let currentLocation = currentLocation else {
+            return
+        }
+        let locationString = "&location=\(currentLocation)"
+        print("\(locationString)")
+        PlacesManager.shared.getPlaces(for: locationString) { [weak self] result in
             guard let strongSelf = self else {return}
             
             switch result {
@@ -80,6 +94,12 @@ class NearbyPlacesViewController: UIViewController {
             
             strongSelf.spinner.dismiss(animated: true)
         }
+    }
+    
+    private func setupTableView() {
+        tableView.frame = view.bounds
+        tableView.delegate = self
+        tableView.dataSource = self
     }
 }
 

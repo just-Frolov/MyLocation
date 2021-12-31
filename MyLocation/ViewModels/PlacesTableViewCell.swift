@@ -10,9 +10,10 @@ import UIKit
 class PlacesTableViewCell: UITableViewCell {
 
     //MARK: - UI Elements -
-    private let placeNameLabel: UILabel = {
+    lazy var placeNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 21, weight: .semibold)
+        label.textColor = .systemMint
         return label
     }()
     
@@ -37,7 +38,7 @@ class PlacesTableViewCell: UITableViewCell {
         placeNameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            placeNameLabel.widthAnchor.constraint(equalToConstant: sizePlaceNameLabel),
+            placeNameLabel.widthAnchor.constraint(equalToConstant: 300),
             placeNameLabel.heightAnchor.constraint(equalToConstant: sizePlaceNameLabel),
             placeNameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             placeNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
