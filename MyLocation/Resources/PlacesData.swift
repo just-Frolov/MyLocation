@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct PlacesData: Decodable {
     let results: [Places]
@@ -13,4 +14,16 @@ struct PlacesData: Decodable {
 
 struct Places: Decodable {
     var name: String
+    var icon: String
+    var vicinity: String
+    var opening_hours: IsOpen
+    var rating: Double
+}
+
+struct IsOpen: Decodable {
+    var open_now: Bool
+}
+
+struct Icon {
+    var icon: UIImage
 }

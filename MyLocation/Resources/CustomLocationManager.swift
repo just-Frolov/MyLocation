@@ -26,7 +26,6 @@ class CustomLocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        //locationManager.distanceFilter = 50
     }
     
     //MARK: - Internal -

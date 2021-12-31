@@ -16,7 +16,7 @@ struct PlacesManager {
     private let baseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     private let apiKeyString = "?key=AIzaSyDCA2pdlOV7pMWTVRGsKLaYYKPJxl1XC5g"
     private let typeString = "&type=restaurant"
-    private let radiusString = "&radius=1500"
+    private let radiusString = "&radius=5000"
     
     //MARK: - Public -
     public func getPlaces(for location: String, completion: @escaping (Result<[Places], Error>) -> Void) {
@@ -39,6 +39,22 @@ struct PlacesManager {
         }
     }
     
+    public func getImage(by link: String, completion: @escaping (Result<UIImage, Error>) -> Void) {
+        guard let url = URL(string: link) else {
+            completion(.failure(GetImageError.failedCreateUrl))
+            return
+        }
+        guard let data = try? Data(contentsOf: url) else {
+            completion(.failure(GetImageError.failedCreateData))
+            return
+        }
+        guard let image = UIImage(data: data) else {
+            completion(.failure(GetImageError.failedCreateImage))
+            return
+        }
+        completion(.success(image))
+    }
+    
     //MARK: - Private -
     private func parseJson(_ data: Data) -> [Places]? {
         let decoder = JSONDecoder()
@@ -53,5 +69,11 @@ struct PlacesManager {
     private enum RequestError: Error {
         case failedResponseJSON
         case failedParseJson
+    }
+    
+    private enum GetImageError: Error {
+        case failedCreateUrl
+        case failedCreateData
+        case failedCreateImage
     }
 }

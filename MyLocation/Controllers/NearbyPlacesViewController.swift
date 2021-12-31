@@ -9,8 +9,12 @@ import UIKit
 import JGProgressHUD
 
 class NearbyPlacesViewController: UIViewController {
-    
     //MARK: - UI Elements -
+    lazy var navBar = UINavigationBar(frame: CGRect(x: 0,
+                                                    y: 0,
+                                                    width: view.frame.size.width,
+                                                    height: 44))
+    
     lazy var tableView: UITableView = {
         let table = UITableView()
         table.isHidden = true
@@ -39,21 +43,49 @@ class NearbyPlacesViewController: UIViewController {
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .black
+        setNavBar()
         setupSubView()
-        setNoPlacesLabelConstraints()
+        setConstraints()
         showSpinner()
         fetchPlaces()
     }
     
     //MARK: - Private -
+    private func setNavBar() {
+        let navItem = UINavigationItem(title: "Nearby Restaurant")
+        let cancelItem = UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: #selector(didTapBackButton))
+        navItem.rightBarButtonItem = cancelItem
+
+        navBar.setItems([navItem], animated: false)
+    }
+    
+    @objc private func didTapBackButton() {
+        let vc = self
+        vc.dismiss(animated: true, completion: nil)
+    }
+    
     private func setupSubView() {
+        navBar.barTintColor = .systemBackground
+        view.addSubview(navBar)
         view.addSubview(tableView)
         view.addSubview(noPlacesLabel)
     }
     
-    private func showSpinner() {
-        spinner.show(in: view)
+    private func setConstraints() {
+        setTableViewConstraints()
+        setNoPlacesLabelConstraints()
+    }
+    
+    private func setTableViewConstraints() {
+        let sizeNavBar: CGFloat = 44
+        
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            tableView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: sizeNavBar),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
     
     private func setNoPlacesLabelConstraints() {
@@ -67,6 +99,10 @@ class NearbyPlacesViewController: UIViewController {
             noPlacesLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             noPlacesLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
         ])
+    }
+    
+    private func showSpinner() {
+        spinner.show(in: view)
     }
     
     private func fetchPlaces() {
@@ -97,7 +133,6 @@ class NearbyPlacesViewController: UIViewController {
     }
     
     private func setupTableView() {
-        tableView.frame = view.bounds
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -110,10 +145,10 @@ extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let placeName = places[indexPath.row].name
+        let place = places[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: PlacesTableViewCell.indentifier,
                                                  for: indexPath) as! PlacesTableViewCell
-        cell.configure(with: placeName)
+        cell.configure(with: place)
         return cell
     }
     
@@ -122,7 +157,7 @@ extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
+        return 80
     }
 }
 

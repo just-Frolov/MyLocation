@@ -9,7 +9,6 @@ import GooglePlaces
 import UIKit
 
 class MapViewController: UIViewController {
-    
     //MARK: - UI Elements -
     lazy var nearbyPlacesButton: UIButton  = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
@@ -105,14 +104,15 @@ class MapViewController: UIViewController {
         mapView.animate(to: camera)
     }
     
-    @objc func wasPressedNearbyPlacesButton() {
+    @objc private func wasPressedNearbyPlacesButton() {
         let vc = NearbyPlacesViewController()
         if let latitude = currentLocation?.coordinate.latitude,
               let longitude = currentLocation?.coordinate.longitude {
             let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
             vc.currentLocation = coordinateString
         }
-        present(vc, animated: false)
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
 }
 
@@ -128,11 +128,11 @@ extension MapViewController: GMSMapViewDelegate {
         mapView.clear()
         let position = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
         let marker = GMSMarker(position: position)
-        setTitle(to: marker)
+        setTitle(to: marker, with: coordinate)
         marker.map = mapView
     }
     
-    func setTitle(to marker: GMSMarker) {
+    func setTitle(to marker: GMSMarker, with coordinate: CLLocationCoordinate2D) {        
         let placeFields: GMSPlaceField = [.name, .formattedAddress]
         placesClient.findPlaceLikelihoodsFromCurrentLocation(withPlaceFields: placeFields) { (placeLikelihoods, error) in
             guard error == nil else {
