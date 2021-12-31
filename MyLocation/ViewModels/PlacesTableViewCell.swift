@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class PlacesTableViewCell: UITableViewCell {
     //MARK: - Static Constant -
@@ -161,19 +162,7 @@ class PlacesTableViewCell: UITableViewCell {
             placeIsOpenLabel.text = "Close"
         }
         
-        // FIXME: -
-        PlacesManager.shared.getImage(by: model.icon) { [weak self] result in
-            guard let strongSelf = self else {
-                return
-            }
-            
-            switch result {
-            case .failure(let error):
-                print(error)
-                strongSelf.placeIcon.image = UIImage(systemName: "map.fill")
-            case .success(let image):
-                strongSelf.placeIcon.image = image
-            }
-        }
+        let url = URL(string: model.icon)
+        placeIcon.kf.setImage(with: url)
     }
 }

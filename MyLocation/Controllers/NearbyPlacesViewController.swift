@@ -10,11 +10,6 @@ import JGProgressHUD
 
 class NearbyPlacesViewController: UIViewController {
     //MARK: - UI Elements -
-    lazy var navBar = UINavigationBar(frame: CGRect(x: 0,
-                                                    y: 0,
-                                                    width: view.frame.size.width,
-                                                    height: 44))
-    
     lazy var tableView: UITableView = {
         let table = UITableView()
         table.isHidden = true
@@ -52,11 +47,8 @@ class NearbyPlacesViewController: UIViewController {
     
     //MARK: - Private -
     private func setNavBar() {
-        let navItem = UINavigationItem(title: "Nearby Restaurant")
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: #selector(didTapBackButton))
-        navItem.rightBarButtonItem = cancelItem
-
-        navBar.setItems([navItem], animated: false)
+        navigationController?.navigationBar.isHidden = false
+        title = "Nearby Restaurant"
     }
     
     @objc private func didTapBackButton() {
@@ -65,8 +57,6 @@ class NearbyPlacesViewController: UIViewController {
     }
     
     private func setupSubView() {
-        navBar.barTintColor = .systemBackground
-        view.addSubview(navBar)
         view.addSubview(tableView)
         view.addSubview(noPlacesLabel)
     }

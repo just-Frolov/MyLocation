@@ -18,8 +18,7 @@ extension MapViewController {
         }
         
         let alertActionOK = UIAlertAction(title: "OK", style: .default) { action in
-            let tfText = alertController.textFields?.first
-            guard let text = tfText else {return}
+            _ = alertController.textFields?.first
             
         }
         let alertActionCancel = UIAlertAction(title: "Cancel", style: .default) { _ in

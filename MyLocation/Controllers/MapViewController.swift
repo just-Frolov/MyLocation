@@ -42,6 +42,7 @@ class MapViewController: UIViewController {
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        setNavBar()
         createMapWithDefaultLocation()
         setMapView()
         setupSubView()
@@ -51,6 +52,10 @@ class MapViewController: UIViewController {
     }
     
     //MARK: - Private -
+    private func setNavBar() {
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     private func createMapWithDefaultLocation() {
         let defaultLocation = CLLocation(latitude: -33.869405, longitude: 151.199)
         let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,

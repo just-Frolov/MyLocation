@@ -39,22 +39,6 @@ struct PlacesManager {
         }
     }
     
-    public func getImage(by link: String, completion: @escaping (Result<UIImage, Error>) -> Void) {
-        guard let url = URL(string: link) else {
-            completion(.failure(GetImageError.failedCreateUrl))
-            return
-        }
-        guard let data = try? Data(contentsOf: url) else {
-            completion(.failure(GetImageError.failedCreateData))
-            return
-        }
-        guard let image = UIImage(data: data) else {
-            completion(.failure(GetImageError.failedCreateImage))
-            return
-        }
-        completion(.success(image))
-    }
-    
     //MARK: - Private -
     private func parseJson(_ data: Data) -> [Places]? {
         let decoder = JSONDecoder()

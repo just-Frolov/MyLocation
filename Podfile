@@ -5,6 +5,7 @@ target 'MyLocation' do
   use_frameworks!
   
   pod 'Alamofire'
+  pod 'Kingfisher'
   pod 'JGProgressHUD'
 
   pod 'GoogleMaps'

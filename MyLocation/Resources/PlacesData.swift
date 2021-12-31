@@ -23,7 +23,3 @@ struct Places: Decodable {
 struct IsOpen: Decodable {
     var open_now: Bool
 }
-
-struct Icon {
-    var icon: UIImage
-}
