@@ -7,6 +7,7 @@ target 'MyLocation' do
   pod 'Alamofire'
   pod 'Kingfisher'
   pod 'JGProgressHUD'
+  pod 'SnapKit'
 
   pod 'GoogleMaps'
   pod 'GooglePlaces'

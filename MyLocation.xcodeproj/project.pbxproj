@@ -68,15 +68,15 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
-		B0422979277DEF0900860F5B /* ViewModels */ = {
+		B0422979277DEF0900860F5B /* View */ = {
 			isa = PBXGroup;
 			children = (
 				B0422976277DED6900860F5B /* PlacesTableViewCell.swift */,
 			);
-			path = ViewModels;
+			path = View;
 			sourceTree = "<group>";
 		};
-		B042297B277DEF5500860F5B /* Resources */ = {
+		B042297B277DEF5500860F5B /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				B042297C277E01BF00860F5B /* PlacesManager.swift */,
@@ -84,7 +84,7 @@
 				B088D0242774C339007DB0F4 /* CustomLocationManager.swift */,
 				B0422972277DAA2400860F5B /* MapViewManager.swift */,
 			);
-			path = Resources;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		B05443B127707EC500ACB794 = {
@@ -108,11 +108,11 @@
 		B05443BC27707EC500ACB794 /* MyLocation */ = {
 			isa = PBXGroup;
 			children = (
+				B042297B277DEF5500860F5B /* Models */,
+				B0422979277DEF0900860F5B /* View */,
 				B0422978277DEEEC00860F5B /* Controllers */,
-				B0422979277DEF0900860F5B /* ViewModels */,
-				B042297B277DEF5500860F5B /* Resources */,
-				B05443BD27707EC500ACB794 /* AppDelegate.swift */,
 				B05443BF27707EC500ACB794 /* SceneDelegate.swift */,
+				B05443BD27707EC500ACB794 /* AppDelegate.swift */,
 				B0958E922770B9F600BB13C2 /* Alert.swift */,
 				B05443C327707EC500ACB794 /* Main.storyboard */,
 				B05443C627707EC600ACB794 /* Assets.xcassets */,

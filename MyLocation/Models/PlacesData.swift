@@ -16,8 +16,8 @@ struct Places: Decodable {
     var name: String
     var icon: String
     var vicinity: String
-    var opening_hours: IsOpen
-    var rating: Double
+    var opening_hours: IsOpen?
+    var rating: Double?
 }
 
 struct IsOpen: Decodable {

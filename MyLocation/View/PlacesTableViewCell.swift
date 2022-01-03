@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import SnapKit
 
 class PlacesTableViewCell: UITableViewCell {
     //MARK: - Static Constant -
@@ -155,14 +156,22 @@ class PlacesTableViewCell: UITableViewCell {
     public func configure(with model: Places) {
         placeNameLabel.text = model.name
         placeAddressLabel.text = model.vicinity
-        placeRatingLabel.text = String(model.rating)
-        if model.opening_hours.open_now {
+        
+        
+        placeRatingLabel.text = String(model.rating ?? 0)
+        
+        let url = URL(string: model.icon)
+        placeIcon.kf.setImage(with: url)
+        
+        guard let isOpen = model.opening_hours else {
+            placeIsOpenLabel.text = "No Info"
+            return
+        }
+        
+        if isOpen.open_now {
             placeIsOpenLabel.text = "Open"
         } else {
             placeIsOpenLabel.text = "Close"
         }
-        
-        let url = URL(string: model.icon)
-        placeIcon.kf.setImage(with: url)
     }
 }

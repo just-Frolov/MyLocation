@@ -21,6 +21,7 @@ struct PlacesManager {
     //MARK: - Public -
     public func getPlaces(for location: String, completion: @escaping (Result<[Places], Error>) -> Void) {
         let urlString = baseURL + apiKeyString + typeString + radiusString + location
+        print(urlString)
        
         AF.request(urlString).responseJSON { responce in
             guard responce.error == nil else {

@@ -23,8 +23,6 @@ class MapViewController: UIViewController {
         return button
     }()
     
-    private let searchRadius: Double = 1000
-
     //MARK: - Variables -
     private var mapView = GMSMapView()
     private var placesClient: GMSPlacesClient!
@@ -112,12 +110,11 @@ class MapViewController: UIViewController {
     @objc private func wasPressedNearbyPlacesButton() {
         let vc = NearbyPlacesViewController()
         if let latitude = currentLocation?.coordinate.latitude,
-              let longitude = currentLocation?.coordinate.longitude {
+           let longitude = currentLocation?.coordinate.longitude {
             let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
             vc.currentLocation = coordinateString
         }
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
@@ -137,8 +134,9 @@ extension MapViewController: GMSMapViewDelegate {
         marker.map = mapView
     }
     
-    func setTitle(to marker: GMSMarker, with coordinate: CLLocationCoordinate2D) {        
+    func setTitle(to marker: GMSMarker, with coordinate: CLLocationCoordinate2D) {
         let placeFields: GMSPlaceField = [.name, .formattedAddress]
+        
         placesClient.findPlaceLikelihoodsFromCurrentLocation(withPlaceFields: placeFields) { (placeLikelihoods, error) in
             guard error == nil else {
                 print("Current place error: \(error?.localizedDescription ?? "")")

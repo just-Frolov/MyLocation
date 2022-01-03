@@ -8,6 +8,7 @@ PODS:
   - GooglePlaces (6.0.0)
   - JGProgressHUD (2.2)
   - Kingfisher (7.1.2)
+  - SnapKit (5.0.1)
 
 DEPENDENCIES:
   - Alamofire
@@ -15,6 +16,7 @@ DEPENDENCIES:
   - GooglePlaces
   - JGProgressHUD
   - Kingfisher
+  - SnapKit
 
 SPEC REPOS:
   trunk:
@@ -23,6 +25,7 @@ SPEC REPOS:
     - GooglePlaces
     - JGProgressHUD
     - Kingfisher
+    - SnapKit
 
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
@@ -30,7 +33,8 @@ SPEC CHECKSUMS:
   GooglePlaces: c97d96ae68594acb64035c9ca9f26fbfc1d23af1
   JGProgressHUD: d83d7a981b85d11205e19ff8ad5bb9c40571c847
   Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
 
-PODFILE CHECKSUM: 4c4d08ff0f932fb59ff1f42226de39a8a09b1785
+PODFILE CHECKSUM: 7293626a76e0863aae7a07971ac509867d8e37da
 
 COCOAPODS: 1.11.2

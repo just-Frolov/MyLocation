@@ -45,15 +45,15 @@ class NearbyPlacesViewController: UIViewController {
         fetchPlaces()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     //MARK: - Private -
     private func setNavBar() {
         navigationController?.navigationBar.isHidden = false
-        title = "Nearby Restaurant"
-    }
-    
-    @objc private func didTapBackButton() {
-        let vc = self
-        vc.dismiss(animated: true, completion: nil)
+        navigationItem.title = "Restaurants in a 5 km radius"
     }
     
     private func setupSubView() {
