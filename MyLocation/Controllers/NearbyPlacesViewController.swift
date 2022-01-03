@@ -53,7 +53,7 @@ class NearbyPlacesViewController: UIViewController {
     //MARK: - Private -
     private func setNavBar() {
         navigationController?.navigationBar.isHidden = false
-        navigationItem.title = "Restaurants in a 5 km radius"
+        navigationItem.title = "Restaurants in a 5 km"
     }
     
     private func addSubViews() {
