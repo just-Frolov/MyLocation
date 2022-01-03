@@ -5,7 +5,6 @@
 //  Created by Данил Фролов on 20.12.2021.
 //
 import GoogleMaps
-import GooglePlaces
 import UIKit
 
 class MapViewController: UIViewController {
@@ -25,7 +24,6 @@ class MapViewController: UIViewController {
     
     //MARK: - Variables -
     private var mapView = GMSMapView()
-    private var placesClient: GMSPlacesClient!
     
     private var currentLocation: CLLocation? {
         didSet {
@@ -43,10 +41,9 @@ class MapViewController: UIViewController {
         setNavBar()
         createMapWithDefaultLocation()
         setMapView()
-        setupSubView()
-        setNearbyPlacesButtonConstraints()
+        addSubViews()
         setLocationManager()
-        setPlacesClient()
+        setNearbyPlacesButtonConstraints()
     }
     
     //MARK: - Private -
@@ -67,12 +64,12 @@ class MapViewController: UIViewController {
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.isMyLocationEnabled = true
         mapView.delegate = self
+        mapView.isHidden = true
     }
     
-    private func setupSubView() {
+    private func addSubViews() {
         view.addSubview(mapView)
         view.addSubview(nearbyPlacesButton)
-        mapView.isHidden = true
     }
     
     private func setNearbyPlacesButtonConstraints() {
@@ -80,23 +77,16 @@ class MapViewController: UIViewController {
         let spaceAtTopForNearbyPlacesButton: CGFloat = 30
         let spaceAtRightForNearbyPlacesButton: CGFloat = -10
         
-        nearbyPlacesButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            nearbyPlacesButton.widthAnchor.constraint(equalToConstant: sizeNearbyPlacesButton),
-            nearbyPlacesButton.heightAnchor.constraint(equalToConstant: sizeNearbyPlacesButton),
-            nearbyPlacesButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: spaceAtTopForNearbyPlacesButton),
-            nearbyPlacesButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: spaceAtRightForNearbyPlacesButton)
-        ])
+        nearbyPlacesButton.snp.makeConstraints { (make) -> Void in
+            make.top.equalTo(view).offset(spaceAtTopForNearbyPlacesButton)
+            make.right.equalTo(view).offset(spaceAtRightForNearbyPlacesButton)
+            make.height.width.equalTo(sizeNearbyPlacesButton)
+        }
     }
     
     private func setLocationManager() {
         CustomLocationManager.shared.delegate = self
         CustomLocationManager.shared.startTracking()
-    }
-    
-    private func setPlacesClient() {
-        placesClient = GMSPlacesClient.shared()
     }
     
     private func setCurrentLocation(_ location: CLLocation) {
@@ -114,7 +104,7 @@ class MapViewController: UIViewController {
             let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
             vc.currentLocation = coordinateString
         }
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: false)
     }
 }
 
@@ -127,30 +117,51 @@ extension MapViewController: CustomLocationManagerDelegate {
 
 extension MapViewController: GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-        mapView.clear()
-        let position = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        let marker = GMSMarker(position: position)
-        setTitle(to: marker, with: coordinate)
-        marker.map = mapView
-    }
-    
-    func setTitle(to marker: GMSMarker, with coordinate: CLLocationCoordinate2D) {
-        let placeFields: GMSPlaceField = [.name, .formattedAddress]
+        let marker = GMSMarker(position: coordinate)
+        let decoder = CLGeocoder()
+        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         
-        placesClient.findPlaceLikelihoodsFromCurrentLocation(withPlaceFields: placeFields) { (placeLikelihoods, error) in
-            guard error == nil else {
-                print("Current place error: \(error?.localizedDescription ?? "")")
+        mapView.clear()
+        
+        decoder.reverseGeocodeLocation(location) { placemarks, error in
+            guard let placeMark = placemarks?.first else {
                 return
             }
             
-            guard let place = placeLikelihoods?.first?.place else {
-                marker.title = "No current place"
-                marker.snippet = ""
-                return
+            guard let placeName = placeMark.name ??
+                    placeMark.subThoroughfare ??
+                    placeMark.thoroughfare else {
+                        return
+                    }
+            
+            var address = ""
+            if let subLocality = placeMark.subLocality ?? placeMark.name {
+                address.append(subLocality)
+            }
+            if let city = placeMark.locality ?? placeMark.subAdministrativeArea {
+                address.addingDevidingPrefixIfNeeded()
+                address.append(city)
+            }
+            if let state = placeMark.administrativeArea {
+                address.addingDevidingPrefixIfNeeded()
+                address.append(state)
+            }
+            if let country = placeMark.country {
+                address.addingDevidingPrefixIfNeeded()
+                address.append(country)
             }
             
-            marker.title = place.name
-            marker.snippet = place.formattedAddress
+            marker.title = placeName
+            marker.snippet = address
+            marker.appearAnimation = .pop
+            marker.map = mapView
         }
+    }
+}
+
+extension String {
+    mutating func addingDevidingPrefixIfNeeded() {
+        guard !self.isEmpty else { return }
+        self = self + ", "
     }
 }

@@ -22,7 +22,7 @@ class PlacesTableViewCell: UITableViewCell {
     
     lazy var placeNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 21, weight: .semibold)
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.textColor = .systemMint
         label.numberOfLines = 0
         return label
@@ -50,7 +50,7 @@ class PlacesTableViewCell: UITableViewCell {
     //MARK: - Life Cycle -
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addSubview()
+        addSubviews()
         setConstraints()
     }
     
@@ -59,7 +59,7 @@ class PlacesTableViewCell: UITableViewCell {
     }
     
     //MARK: - Private -
-    private func addSubview() {
+    private func addSubviews() {
         contentView.addSubview(placeIcon)
         contentView.addSubview(placeNameLabel)
         contentView.addSubview(placeAddressLabel)
@@ -77,31 +77,28 @@ class PlacesTableViewCell: UITableViewCell {
     
     private func setPlaceIconConstraints() {
         let iconSize: CGFloat = 40
+        let spaceAtLeft: CGFloat = 10
         
-        placeIcon.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            placeIcon.widthAnchor.constraint(equalToConstant: iconSize),
-            placeIcon.heightAnchor.constraint(equalToConstant: iconSize),
-            placeIcon.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10),
-            placeIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
-        ])
+        placeIcon.snp.makeConstraints { (make) -> Void in
+            make.width.height.equalTo(iconSize)
+            make.left.equalTo(spaceAtLeft)
+            make.centerY.equalTo(contentView.snp_centerYWithinMargins)
+        }
     }
     
     private func setPlaceNameLabelConstraints() {
-        let spaceAtRight: CGFloat = -10
-        let spaceAtLeft: CGFloat = 10
+        let spaceAtRight: CGFloat = 10
+        let spaceAtLeft: CGFloat = 60
         let spaceAtTop: CGFloat = 10
-        let spaceAtBottom: CGFloat = -49
+        let spaceAtBottom: CGFloat = 50
         
-        placeNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            placeNameLabel.leftAnchor.constraint(equalTo: placeIcon.rightAnchor, constant: spaceAtLeft),
-            placeNameLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: spaceAtRight),
-            placeNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: spaceAtTop),
-            placeNameLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: spaceAtBottom)
-        ])
+        placeNameLabel.snp.makeConstraints { (make) -> Void in
+            make.edges.equalTo(contentView).inset(UIEdgeInsets(top: spaceAtTop,
+                                                               left: spaceAtLeft,
+                                                               bottom: spaceAtBottom,
+                                                               right: spaceAtRight))
+            
+        }
     }
     
     private func setPlaceAddressLabelConstraints() {
@@ -156,22 +153,16 @@ class PlacesTableViewCell: UITableViewCell {
     public func configure(with model: Places) {
         placeNameLabel.text = model.name
         placeAddressLabel.text = model.vicinity
-        
-        
         placeRatingLabel.text = String(model.rating ?? 0)
         
         let url = URL(string: model.icon)
         placeIcon.kf.setImage(with: url)
         
         guard let isOpen = model.opening_hours else {
-            placeIsOpenLabel.text = "No Info"
+            placeIsOpenLabel.text = "No Information"
             return
         }
         
-        if isOpen.open_now {
-            placeIsOpenLabel.text = "Open"
-        } else {
-            placeIsOpenLabel.text = "Close"
-        }
+        placeIsOpenLabel.text = isOpen.open_now ?  "Open" : "Close"
     }
 }

@@ -18,7 +18,7 @@ class NearbyPlacesViewController: UIViewController {
         return table
     }()
     
-    private let noPlacesLabel: UILabel = {
+    lazy var noPlacesLabel: UILabel = {
         let label = UILabel()
         label.text = "No Places!"
         label.textAlignment = .center
@@ -38,8 +38,8 @@ class NearbyPlacesViewController: UIViewController {
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        addSubViews()
         setNavBar()
-        setupSubView()
         setConstraints()
         showSpinner()
         fetchPlaces()
@@ -56,7 +56,7 @@ class NearbyPlacesViewController: UIViewController {
         navigationItem.title = "Restaurants in a 5 km radius"
     }
     
-    private func setupSubView() {
+    private func addSubViews() {
         view.addSubview(tableView)
         view.addSubview(noPlacesLabel)
     }
@@ -115,6 +115,7 @@ class NearbyPlacesViewController: UIViewController {
                 } else {
                     strongSelf.setupTableView()
                     strongSelf.tableView.isHidden = false
+                    strongSelf.tableView.reloadData()
                 }
             }
             
