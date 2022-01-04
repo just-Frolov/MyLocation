@@ -8,14 +8,21 @@
 import Kingfisher
 import SnapKit
 
-class TableViewCellWithIndentifire: UITableViewCell {
+class BaseTableViewCell: UITableViewCell,
+                            TableRegistable {
 
-    class func id() -> String {
-        return "PlacesTableViewCell"
+}
+
+protocol TableRegistable: UITableViewCell {}
+
+extension TableRegistable {
+    static func register(in tableView: UITableView) {
+        tableView.register(Self.self,
+                           forCellReuseIdentifier: String(describing: self))
     }
 }
 
-class PlacesTableViewCell: TableViewCellWithIndentifire {
+class PlacesTableViewCell: BaseTableViewCell {
     
     //MARK: - UI Elements -
     private lazy var placeIcon: UIImageView = {

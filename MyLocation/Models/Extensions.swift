@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 extension String {
     mutating func addingDevidingPrefixIfNeeded() {
         guard !self.isEmpty else { return }

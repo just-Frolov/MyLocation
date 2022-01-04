@@ -14,8 +14,9 @@ class NearbyPlacesViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let table = UITableView()
         table.isHidden = true
-        table.register(PlacesTableViewCell.self,
-                       forCellReuseIdentifier: PlacesTableViewCell.id())
+        PlacesTableViewCell.register(in: table)
+//        table.register(PlacesTableViewCell.self,
+//                       forCellReuseIdentifier: PlacesTableViewCell.id())
         return table
     }()
     
@@ -134,10 +135,11 @@ extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let place = places[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: PlacesTableViewCell.id(),
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlacesTableViewCell.self),
                                                  for: indexPath) as! PlacesTableViewCell
         cell.configure(with: place)
         return cell
+//        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
