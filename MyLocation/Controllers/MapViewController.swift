@@ -4,12 +4,13 @@
 //
 //  Created by Данил Фролов on 20.12.2021.
 //
-import GoogleMaps
+
 import UIKit
+import GoogleMaps
 
 class MapViewController: UIViewController {
     //MARK: - UI Elements -
-    lazy var nearbyPlacesButton: UIButton  = {
+    private lazy var nearbyPlacesButton: UIButton  = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         let icon = UIImage(systemName: "doc.plaintext.fill")
         button.backgroundColor = .white
@@ -29,7 +30,7 @@ class MapViewController: UIViewController {
         didSet {
             if let location = currentLocation,
                oldValue == nil {
-                setCurrentLocation(location)
+                setupCurrentLocation(location)
                 mapView.isHidden = false
             }
         }
@@ -38,16 +39,20 @@ class MapViewController: UIViewController {
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavBar()
         createMapWithDefaultLocation()
-        setMapView()
+        setupMapView()
         addSubViews()
-        setLocationManager()
-        setNearbyPlacesButtonConstraints()
+        setupLocationManager()
+        setupNearbyPlacesButtonConstraints()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavBar()
     }
     
     //MARK: - Private -
-    private func setNavBar() {
+    private func setupNavBar() {
         navigationController?.navigationBar.isHidden = true
     }
     
@@ -59,7 +64,7 @@ class MapViewController: UIViewController {
         mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
     }
     
-    private func setMapView() {
+    private func setupMapView() {
         mapView.settings.myLocationButton = true
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.isMyLocationEnabled = true
@@ -72,7 +77,7 @@ class MapViewController: UIViewController {
         view.addSubview(nearbyPlacesButton)
     }
     
-    private func setNearbyPlacesButtonConstraints() {
+    private func setupNearbyPlacesButtonConstraints() {
         let sizeNearbyPlacesButton: CGFloat = 50
         let spaceAtTopForNearbyPlacesButton: CGFloat = 30
         let spaceAtRightForNearbyPlacesButton: CGFloat = -10
@@ -84,12 +89,12 @@ class MapViewController: UIViewController {
         }
     }
     
-    private func setLocationManager() {
+    private func setupLocationManager() {
         CustomLocationManager.shared.delegate = self
         CustomLocationManager.shared.startTracking()
     }
     
-    private func setCurrentLocation(_ location: CLLocation) {
+    private func setupCurrentLocation(_ location: CLLocation) {
         let coordinate = location.coordinate
         let camera = GMSCameraPosition.camera(withLatitude: coordinate.latitude,
                                               longitude: coordinate.longitude,

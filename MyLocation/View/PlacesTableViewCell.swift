@@ -5,7 +5,6 @@
 //  Created by Данил Фролов on 30.12.2021.
 //
 
-import UIKit
 import Kingfisher
 import SnapKit
 
@@ -14,13 +13,13 @@ class PlacesTableViewCell: UITableViewCell {
     static let indentifier = "PlacesTableViewCell"
     
     //MARK: - UI Elements -
-    lazy var placeIcon: UIImageView = {
+    private lazy var placeIcon: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         return image
     }()
     
-    lazy var placeNameLabel: UILabel = {
+    private lazy var placeNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.textColor = .systemMint
@@ -28,22 +27,27 @@ class PlacesTableViewCell: UITableViewCell {
         return label
     }()
     
-    lazy var placeAddressLabel: UILabel = {
+    private lazy var placeAddressLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .regular)
         label.numberOfLines = 0
         return label
     }()
     
-    lazy var ratingAndOpenInfoView = UIView()
-    
-    lazy var placeIsOpenLabel: UILabel = {
+    private lazy var ratingAndOpenInfoView: UIView = {
+        let view = UIView()
+        view.addSubview(placeIsOpenLabel)
+        view.addSubview(placeRatingLabel)
+        return view
+    }()
+
+    private lazy var placeIsOpenLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .regular)
         return label
     }()
     
-    lazy var placeRatingLabel: UILabel = {
+    private lazy var placeRatingLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .bold)
         return label
@@ -53,7 +57,7 @@ class PlacesTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubviews()
-        setConstraints()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -66,20 +70,18 @@ class PlacesTableViewCell: UITableViewCell {
         contentView.addSubview(placeNameLabel)
         contentView.addSubview(placeAddressLabel)
         contentView.addSubview(ratingAndOpenInfoView)
-        ratingAndOpenInfoView.addSubview(placeIsOpenLabel)
-        ratingAndOpenInfoView.addSubview(placeRatingLabel)
     }
     
-    private func setConstraints() {
-        setPlaceIconConstraints()
-        setPlaceNameLabelConstraints()
-        setPlaceAddressLabelConstraints()
-        setRatingAndOpenInfoViewConstraints()
-        setPlaceIsOpenLabelConstraints()
-        setPlaceRatingLabelConstraints()
+    private func setupConstraints() {
+        setupPlaceIconConstraints()
+        setupPlaceNameLabelConstraints()
+        setupPlaceAddressLabelConstraints()
+        setupRatingAndOpenInfoViewConstraints()
+        setupPlaceIsOpenLabelConstraints()
+        setupPlaceRatingLabelConstraints()
     }
     
-    private func setPlaceIconConstraints() {
+    private func setupPlaceIconConstraints() {
         let iconSize: CGFloat = 40
         let spaceAtLeft: CGFloat = 10
         
@@ -90,7 +92,7 @@ class PlacesTableViewCell: UITableViewCell {
         }
     }
     
-    private func setPlaceNameLabelConstraints() {
+    private func setupPlaceNameLabelConstraints() {
         let spaceAtRight: CGFloat = 5
         let spaceAtLeft: CGFloat = 60
         let spaceAtTop: CGFloat = 10
@@ -104,7 +106,7 @@ class PlacesTableViewCell: UITableViewCell {
         }
     }
     
-    private func setPlaceAddressLabelConstraints() {
+    private func setupPlaceAddressLabelConstraints() {
         let spaceAtRight: CGFloat = 5
         let spaceAtLeft: CGFloat = 60
         let spaceAtTop: CGFloat = 40
@@ -118,7 +120,7 @@ class PlacesTableViewCell: UITableViewCell {
         }
     }
     
-    private func setRatingAndOpenInfoViewConstraints() {
+    private func setupRatingAndOpenInfoViewConstraints() {
         let spaceAtRight: CGFloat = 5
         let spaceAtLeft: CGFloat = 60
         let spaceAtTop: CGFloat = 60
@@ -132,7 +134,7 @@ class PlacesTableViewCell: UITableViewCell {
         }
     }
     
-    private func setPlaceIsOpenLabelConstraints() {
+    private func setupPlaceIsOpenLabelConstraints() {
         placeIsOpenLabel.snp.makeConstraints { (make) -> Void in
             make.left.equalTo(ratingAndOpenInfoView)
             make.right.equalTo(ratingAndOpenInfoView.snp_centerXWithinMargins)
@@ -140,7 +142,7 @@ class PlacesTableViewCell: UITableViewCell {
         }
     }
     
-    private func setPlaceRatingLabelConstraints() {
+    private func setupPlaceRatingLabelConstraints() {
         placeRatingLabel.snp.makeConstraints { (make) -> Void in
             make.left.equalTo(ratingAndOpenInfoView.snp_centerXWithinMargins)
             make.right.equalTo(ratingAndOpenInfoView)

@@ -5,12 +5,12 @@
 //  Created by Данил Фролов on 30.12.2021.
 //
 
-import UIKit
+import SnapKit
 import JGProgressHUD
 
 class NearbyPlacesViewController: UIViewController {
     //MARK: - UI Elements -
-    lazy var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let table = UITableView()
         table.isHidden = true
         table.register(PlacesTableViewCell.self,
@@ -18,12 +18,12 @@ class NearbyPlacesViewController: UIViewController {
         return table
     }()
     
-    lazy var noPlacesLabel: UILabel = {
+    private lazy var noPlacesLabel: UILabel = {
         let label = UILabel()
         label.text = "No Places!"
         label.textAlignment = .center
         label.textColor = .systemMint
-        label.font = .systemFont(ofSize: 21, weight: .medium)
+        label.font = .systemFont(ofSize: 20, weight: .medium)
         label.isHidden = true
         return label
     }()
@@ -39,19 +39,18 @@ class NearbyPlacesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubViews()
-        setNavBar()
-        setConstraints()
+        setupConstraints()
         showSpinner()
         fetchPlaces()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.navigationBar.isHidden = true
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavBar()
     }
     
     //MARK: - Private -
-    private func setNavBar() {
+    private func setupNavBar() {
         navigationController?.navigationBar.isHidden = false
         navigationItem.title = "Restaurants in a 5 km"
     }
@@ -61,34 +60,28 @@ class NearbyPlacesViewController: UIViewController {
         view.addSubview(noPlacesLabel)
     }
     
-    private func setConstraints() {
-        setTableViewConstraints()
-        setNoPlacesLabelConstraints()
+    private func setupConstraints() {
+        setupTableViewConstraints()
+        setupNoPlacesLabelConstraints()
     }
     
-    private func setTableViewConstraints() {
+    private func setupTableViewConstraints() {
         let sizeNavBar: CGFloat = 44
         
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            tableView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: sizeNavBar),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        tableView.snp.makeConstraints { (make) -> Void in
+            make.width.bottom.equalTo(view)
+            make.top.equalTo(view).offset(sizeNavBar)
+        }
     }
     
-    private func setNoPlacesLabelConstraints() {
-        let sizeNoPlacesLabel: CGFloat = 100
+    private func setupNoPlacesLabelConstraints() {
+        let heightNoPlacesLabel: CGFloat = 20
         
-        noPlacesLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            noPlacesLabel.widthAnchor.constraint(equalToConstant: sizeNoPlacesLabel),
-            noPlacesLabel.heightAnchor.constraint(equalToConstant: sizeNoPlacesLabel),
-            noPlacesLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            noPlacesLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
-        ])
+        noPlacesLabel.snp.makeConstraints { (make) -> Void in
+            make.width.equalTo(view)
+            make.height.equalTo(heightNoPlacesLabel)
+            make.center.equalTo(view)
+        }
     }
     
     private func showSpinner() {
@@ -97,10 +90,10 @@ class NearbyPlacesViewController: UIViewController {
     
     private func fetchPlaces() {
         guard let currentLocation = currentLocation else {
+            noPlacesLabel.isHidden = false
             return
         }
         let locationString = "&location=\(currentLocation)"
-        print("\(locationString)")
         PlacesManager.shared.getPlaces(for: locationString) { [weak self] result in
             guard let strongSelf = self else {return}
             
