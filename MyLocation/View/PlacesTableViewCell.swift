@@ -82,55 +82,37 @@ class PlacesTableViewCell: UITableViewCell {
     }
     
     private func setupPlaceIconConstraints() {
-        let iconSize: CGFloat = 40
-        let spaceAtLeft: CGFloat = 10
-        
         placeIcon.snp.makeConstraints { (make) -> Void in
-            make.width.height.equalTo(iconSize)
-            make.left.equalTo(spaceAtLeft)
+            make.width.height.equalTo(40)
+            make.left.equalTo(10)
             make.centerY.equalTo(contentView.snp_centerYWithinMargins)
         }
     }
     
     private func setupPlaceNameLabelConstraints() {
-        let spaceAtRight: CGFloat = 5
-        let spaceAtLeft: CGFloat = 60
-        let spaceAtTop: CGFloat = 10
-        let spaceAtBottom: CGFloat = 50
-        
         placeNameLabel.snp.makeConstraints { (make) -> Void in
-            make.edges.equalTo(contentView).inset(UIEdgeInsets(top: spaceAtTop,
-                                                               left: spaceAtLeft,
-                                                               bottom: spaceAtBottom,
-                                                               right: spaceAtRight))
+            make.edges.equalTo(contentView).inset(UIEdgeInsets(top: 10,
+                                                               left: 60,
+                                                               bottom: 50,
+                                                               right: 5))
         }
     }
     
     private func setupPlaceAddressLabelConstraints() {
-        let spaceAtRight: CGFloat = 5
-        let spaceAtLeft: CGFloat = 60
-        let spaceAtTop: CGFloat = 40
-        let spaceAtBottom: CGFloat = 20
-        
         placeAddressLabel.snp.makeConstraints { (make) -> Void in
-            make.edges.equalTo(contentView).inset(UIEdgeInsets(top: spaceAtTop,
-                                                               left: spaceAtLeft,
-                                                               bottom: spaceAtBottom,
-                                                               right: spaceAtRight))
+            make.edges.equalTo(contentView).inset(UIEdgeInsets(top: 40,
+                                                               left: 60,
+                                                               bottom: 20,
+                                                               right: 5))
         }
     }
     
     private func setupRatingAndOpenInfoViewConstraints() {
-        let spaceAtRight: CGFloat = 5
-        let spaceAtLeft: CGFloat = 60
-        let spaceAtTop: CGFloat = 60
-        let spaceAtBottom: CGFloat = 0
-        
         ratingAndOpenInfoView.snp.makeConstraints { (make) -> Void in
-            make.edges.equalTo(contentView).inset(UIEdgeInsets(top: spaceAtTop,
-                                                               left: spaceAtLeft,
-                                                               bottom: spaceAtBottom,
-                                                               right: spaceAtRight))
+            make.edges.equalTo(contentView).inset(UIEdgeInsets(top: 60,
+                                                               left: 60,
+                                                               bottom: 0,
+                                                               right: 5))
         }
     }
     
@@ -151,7 +133,7 @@ class PlacesTableViewCell: UITableViewCell {
     }
     
     //MARK: - Public -
-    public func configure(with model: Places) {
+    public func configure(with model: Place) {
         placeNameLabel.text = model.name
         placeAddressLabel.text = model.vicinity
         placeRatingLabel.text = String(model.rating ?? 0)
@@ -159,11 +141,11 @@ class PlacesTableViewCell: UITableViewCell {
         let url = URL(string: model.icon)
         placeIcon.kf.setImage(with: url)
         
-        guard let isOpen = model.opening_hours else {
+        guard let isOpen = model.openingHours else {
             placeIsOpenLabel.text = "No Information"
             return
         }
         
-        placeIsOpenLabel.text = isOpen.open_now ?  "Open" : "Close"
+        placeIsOpenLabel.text = isOpen.openNow ?  "Open" : "Close"
     }
 }

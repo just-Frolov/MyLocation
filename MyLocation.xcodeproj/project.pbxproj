@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0A1CF52D23CE35B4C9062DE7 /* Pods_MyLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB11570266E57647012FF3C7 /* Pods_MyLocation.framework */; };
-		B0422973277DAA2400860F5B /* MapViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0422972277DAA2400860F5B /* MapViewManager.swift */; };
+		B0422973277DAA2400860F5B /* StartServicesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0422972277DAA2400860F5B /* StartServicesManager.swift */; };
 		B0422975277DE0A800860F5B /* NearbyPlacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0422974277DE0A800860F5B /* NearbyPlacesViewController.swift */; };
 		B0422977277DED6900860F5B /* PlacesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0422976277DED6900860F5B /* PlacesTableViewCell.swift */; };
 		B042297D277E01BF00860F5B /* PlacesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B042297C277E01BF00860F5B /* PlacesManager.swift */; };
@@ -20,7 +20,6 @@
 		B05443C727707EC600ACB794 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B05443C627707EC600ACB794 /* Assets.xcassets */; };
 		B05443CA27707EC600ACB794 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B05443C827707EC600ACB794 /* LaunchScreen.storyboard */; };
 		B088D0252774C339007DB0F4 /* CustomLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B088D0242774C339007DB0F4 /* CustomLocationManager.swift */; };
-		B0958E932770B9F600BB13C2 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0958E922770B9F600BB13C2 /* Alert.swift */; };
 		B09EEB7C277E0B7C006785BA /* JGProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09EEB7B277E0B7C006785BA /* JGProgressHUD.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +27,7 @@
 		34B6AC81A06924CCBFCE8405 /* Pods-MyLocation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyLocation.debug.xcconfig"; path = "Target Support Files/Pods-MyLocation/Pods-MyLocation.debug.xcconfig"; sourceTree = "<group>"; };
 		7D48AC35BE2F3508E8072E71 /* Pods-MyLocation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyLocation.release.xcconfig"; path = "Target Support Files/Pods-MyLocation/Pods-MyLocation.release.xcconfig"; sourceTree = "<group>"; };
 		AB11570266E57647012FF3C7 /* Pods_MyLocation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyLocation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0422972277DAA2400860F5B /* MapViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewManager.swift; sourceTree = "<group>"; };
+		B0422972277DAA2400860F5B /* StartServicesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartServicesManager.swift; sourceTree = "<group>"; };
 		B0422974277DE0A800860F5B /* NearbyPlacesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPlacesViewController.swift; sourceTree = "<group>"; };
 		B0422976277DED6900860F5B /* PlacesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesTableViewCell.swift; sourceTree = "<group>"; };
 		B042297C277E01BF00860F5B /* PlacesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesManager.swift; sourceTree = "<group>"; };
@@ -42,7 +41,6 @@
 		B05443C927707EC600ACB794 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B05443CB27707EC600ACB794 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B088D0242774C339007DB0F4 /* CustomLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLocationManager.swift; sourceTree = "<group>"; };
-		B0958E922770B9F600BB13C2 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		B09EEB7B277E0B7C006785BA /* JGProgressHUD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JGProgressHUD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -82,7 +80,7 @@
 				B042297C277E01BF00860F5B /* PlacesManager.swift */,
 				B042297E277E05FF00860F5B /* PlacesData.swift */,
 				B088D0242774C339007DB0F4 /* CustomLocationManager.swift */,
-				B0422972277DAA2400860F5B /* MapViewManager.swift */,
+				B0422972277DAA2400860F5B /* StartServicesManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -113,7 +111,6 @@
 				B0422978277DEEEC00860F5B /* Controllers */,
 				B05443BF27707EC500ACB794 /* SceneDelegate.swift */,
 				B05443BD27707EC500ACB794 /* AppDelegate.swift */,
-				B0958E922770B9F600BB13C2 /* Alert.swift */,
 				B05443C327707EC500ACB794 /* Main.storyboard */,
 				B05443C627707EC600ACB794 /* Assets.xcassets */,
 				B05443C827707EC600ACB794 /* LaunchScreen.storyboard */,
@@ -279,9 +276,8 @@
 				B0422977277DED6900860F5B /* PlacesTableViewCell.swift in Sources */,
 				B088D0252774C339007DB0F4 /* CustomLocationManager.swift in Sources */,
 				B042297D277E01BF00860F5B /* PlacesManager.swift in Sources */,
-				B0958E932770B9F600BB13C2 /* Alert.swift in Sources */,
 				B05443C027707EC500ACB794 /* SceneDelegate.swift in Sources */,
-				B0422973277DAA2400860F5B /* MapViewManager.swift in Sources */,
+				B0422973277DAA2400860F5B /* StartServicesManager.swift in Sources */,
 				B042297F277E05FF00860F5B /* PlacesData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

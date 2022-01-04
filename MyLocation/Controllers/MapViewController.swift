@@ -40,7 +40,7 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         createMapWithDefaultLocation()
-        setupMapView()
+        configureMapView()
         addSubViews()
         setupLocationManager()
         setupNearbyPlacesButtonConstraints()
@@ -48,16 +48,19 @@ class MapViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
-        
+        setupNavigationBar(isHidden: true, with: animated)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
+        setupNavigationBar(isHidden: false, with: animated)
     }
     
     //MARK: - Private -
+    private func setupNavigationBar(isHidden: Bool, with animated: Bool) {
+        navigationController?.setNavigationBarHidden(isHidden, animated: animated)
+    }
+    
     private func createMapWithDefaultLocation() {
         let defaultLocation = CLLocation(latitude: -33.869405, longitude: 151.199)
         let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
@@ -66,7 +69,7 @@ class MapViewController: UIViewController {
         mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
     }
     
-    private func setupMapView() {
+    private func configureMapView() {
         mapView.settings.myLocationButton = true
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.isMyLocationEnabled = true
@@ -80,14 +83,10 @@ class MapViewController: UIViewController {
     }
     
     private func setupNearbyPlacesButtonConstraints() {
-        let sizeNearbyPlacesButton: CGFloat = 50
-        let spaceAtTopForNearbyPlacesButton: CGFloat = 30
-        let spaceAtRightForNearbyPlacesButton: CGFloat = -10
-        
         nearbyPlacesButton.snp.makeConstraints { (make) -> Void in
-            make.top.equalTo(view).offset(spaceAtTopForNearbyPlacesButton)
-            make.right.equalTo(view).offset(spaceAtRightForNearbyPlacesButton)
-            make.height.width.equalTo(sizeNearbyPlacesButton)
+            make.top.equalTo(view).offset(30)
+            make.right.equalTo(view).offset(-10)
+            make.height.width.equalTo(50)
         }
     }
     

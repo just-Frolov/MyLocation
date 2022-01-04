@@ -7,18 +7,28 @@
 
 import Foundation
 
-struct PlacesData: Decodable {
-    let results: [Places]
+struct PlacesData: Codable {
+    let results: [Place]
 }
 
-struct Places: Decodable {
-    var name: String
-    var icon: String
-    var vicinity: String
-    var opening_hours: IsOpen?
-    var rating: Double?
+struct Place: Codable {
+    let icon: String
+    let name: String
+    let openingHours: OpeningHours?
+    let rating: Double?
+    let vicinity: String
+
+    enum CodingKeys: String, CodingKey {
+        case icon, name
+        case openingHours = "opening_hours"
+        case rating, vicinity
+    }
 }
 
-struct IsOpen: Decodable {
-    var open_now: Bool
+struct OpeningHours: Codable {
+    let openNow: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case openNow = "open_now"
+    }
 }

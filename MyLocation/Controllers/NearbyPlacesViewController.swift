@@ -34,7 +34,7 @@ class NearbyPlacesViewController: UIViewController {
     
     //MARK: - Variables -
     public var currentLocation: String?
-    private var places: [Places]!
+    private var places: [Place]!
     
     //MARK: - Life Cycle -
     override func viewDidLoad() {
@@ -49,7 +49,8 @@ class NearbyPlacesViewController: UIViewController {
     //MARK: - Private -
     private func setupNavigationBar() {
         let backButton = UIBarButtonItem()
-        title = "Restaurants in a 5 km"
+        let radius = PlacesManager.shared.radius
+        title = "Restaurants in a \(radius) km"
         backButton.title = "Map"
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         setupNavigationBarAppearence()
@@ -109,17 +110,18 @@ class NearbyPlacesViewController: UIViewController {
                 strongSelf.noPlacesLabel.isHidden = false
             case .success(let placesArray):
                 strongSelf.places = placesArray
-                if placesArray.count == 0 {
-                    strongSelf.noPlacesLabel.isHidden = false
-                } else {
-                    strongSelf.setupTableView()
-                    strongSelf.tableView.isHidden = false
-                    strongSelf.tableView.reloadData()
-                }
+                strongSelf.configureTableView(placesArray.isEmpty)
             }
             
             strongSelf.spinner.dismiss(animated: true)
         }
+    }
+    
+    private func configureTableView(_ isEmpty: Bool) {
+        self.noPlacesLabel.isHidden = !isEmpty
+        self.tableView.isHidden = isEmpty
+        self.tableView.reloadData()
+        self.setupTableView()
     }
     
     private func setupTableView() {

@@ -8,7 +8,7 @@
 import GoogleMaps
 import GooglePlaces
 
-class MapViewManager {
+class StartServicesManager {
     private let apiKey = "AIzaSyDCA2pdlOV7pMWTVRGsKLaYYKPJxl1XC5g"
     
     public func setApiKey() {
