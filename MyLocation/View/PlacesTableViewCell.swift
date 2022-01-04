@@ -8,20 +8,6 @@
 import Kingfisher
 import SnapKit
 
-class BaseTableViewCell: UITableViewCell,
-                            TableRegistable {
-
-}
-
-protocol TableRegistable: UITableViewCell {}
-
-extension TableRegistable {
-    static func register(in tableView: UITableView) {
-        tableView.register(Self.self,
-                           forCellReuseIdentifier: String(describing: self))
-    }
-}
-
 class PlacesTableViewCell: BaseTableViewCell {
     
     //MARK: - UI Elements -

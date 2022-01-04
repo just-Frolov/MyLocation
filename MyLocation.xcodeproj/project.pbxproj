@@ -22,6 +22,7 @@
 		B05443CA27707EC600ACB794 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B05443C827707EC600ACB794 /* LaunchScreen.storyboard */; };
 		B088D0252774C339007DB0F4 /* CustomLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B088D0242774C339007DB0F4 /* CustomLocationManager.swift */; };
 		B09EEB7C277E0B7C006785BA /* JGProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09EEB7B277E0B7C006785BA /* JGProgressHUD.framework */; };
+		B0F6FE692784F85400BE90A2 /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F6FE682784F85400BE90A2 /* BaseTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		B05443CB27707EC600ACB794 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B088D0242774C339007DB0F4 /* CustomLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLocationManager.swift; sourceTree = "<group>"; };
 		B09EEB7B277E0B7C006785BA /* JGProgressHUD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JGProgressHUD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0F6FE682784F85400BE90A2 /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				B0422976277DED6900860F5B /* PlacesTableViewCell.swift */,
+				B0F6FE682784F85400BE90A2 /* BaseTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 				B05443BE27707EC500ACB794 /* AppDelegate.swift in Sources */,
 				B0422977277DED6900860F5B /* PlacesTableViewCell.swift in Sources */,
 				B088D0252774C339007DB0F4 /* CustomLocationManager.swift in Sources */,
+				B0F6FE692784F85400BE90A2 /* BaseTableViewCell.swift in Sources */,
 				B024544E2784900300DBA0F6 /* Extensions.swift in Sources */,
 				B042297D277E01BF00860F5B /* PlacesManager.swift in Sources */,
 				B05443C027707EC500ACB794 /* SceneDelegate.swift in Sources */,

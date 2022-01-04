@@ -135,11 +135,11 @@ extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let place = places[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlacesTableViewCell.self),
-                                                 for: indexPath) as! PlacesTableViewCell
+        let cell = PlacesTableViewCell.cellRegister(in: tableView, cellForRowAt: indexPath)
+//        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PlacesTableViewCell.self),
+//                                                    for: indexPath) as! PlacesTableViewCell
         cell.configure(with: place)
         return cell
-//        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
