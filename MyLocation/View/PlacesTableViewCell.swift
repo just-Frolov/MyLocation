@@ -8,9 +8,14 @@
 import Kingfisher
 import SnapKit
 
-class PlacesTableViewCell: UITableViewCell {
-    //MARK: - Static Constant -
-    static let indentifier = "PlacesTableViewCell"
+class TableViewCellWithIndentifire: UITableViewCell {
+
+    class func id() -> String {
+        return "PlacesTableViewCell"
+    }
+}
+
+class PlacesTableViewCell: TableViewCellWithIndentifire {
     
     //MARK: - UI Elements -
     private lazy var placeIcon: UIImageView = {
