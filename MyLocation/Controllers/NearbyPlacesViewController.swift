@@ -7,6 +7,7 @@
 
 import SnapKit
 import JGProgressHUD
+import UIKit
 
 class NearbyPlacesViewController: UIViewController {
     //MARK: - UI Elements -
@@ -38,21 +39,26 @@ class NearbyPlacesViewController: UIViewController {
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         addSubViews()
         setupConstraints()
         showSpinner()
         fetchPlaces()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupNavBar()
+    //MARK: - Private -
+    private func setupNavigationBar() {
+        let backButton = UIBarButtonItem()
+        title = "Restaurants in a 5 km"
+        backButton.title = "Map"
+        navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        setupNavigationBarAppearence()
     }
     
-    //MARK: - Private -
-    private func setupNavBar() {
-        navigationController?.navigationBar.isHidden = false
-        navigationItem.title = "Restaurants in a 5 km"
+    private func setupNavigationBarAppearence() {
+        let navAppearance = UINavigationBarAppearance()
+        navigationController?.navigationBar.scrollEdgeAppearance = navAppearance
+        navigationController?.navigationBar.standardAppearance = navAppearance
     }
     
     private func addSubViews() {

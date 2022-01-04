@@ -48,14 +48,16 @@ class MapViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupNavBar()
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     //MARK: - Private -
-    private func setupNavBar() {
-        navigationController?.navigationBar.isHidden = true
-    }
-    
     private func createMapWithDefaultLocation() {
         let defaultLocation = CLLocation(latitude: -33.869405, longitude: 151.199)
         let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
