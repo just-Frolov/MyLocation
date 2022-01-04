@@ -18,7 +18,7 @@ class MapViewController: UIViewController {
         button.setImage(icon, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self,
-                         action: #selector(wasPressedNearbyPlacesButton),
+                         action: #selector(nearbyPlacesButtonTapped),
                          for: .touchUpInside)
         return button
     }()
@@ -103,14 +103,14 @@ class MapViewController: UIViewController {
         mapView.animate(to: camera)
     }
     
-    @objc private func wasPressedNearbyPlacesButton() {
-        let vc = NearbyPlacesViewController()
+    @objc private func nearbyPlacesButtonTapped() {
+        let viewController = NearbyPlacesViewController()
         if let latitude = currentLocation?.coordinate.latitude,
            let longitude = currentLocation?.coordinate.longitude {
             let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
-            vc.currentLocation = coordinateString
+            viewController.currentLocation = coordinateString
         }
-        navigationController?.pushViewController(vc, animated: false)
+        navigationController?.pushViewController(viewController, animated: false)
     }
 }
 
@@ -129,45 +129,45 @@ extension MapViewController: GMSMapViewDelegate {
         
         mapView.clear()
         
-        decoder.reverseGeocodeLocation(location) { placemarks, error in
-            guard let placeMark = placemarks?.first else {
+        decoder.reverseGeocodeLocation(location) { [weak self] placemarks, _ in
+            guard let strongSelf = self else {
                 return
             }
-            
-            guard let placeName = placeMark.name ??
-                    placeMark.subThoroughfare ??
-                    placeMark.thoroughfare else {
-                        return
-                    }
-            
-            var address = ""
-            if let subLocality = placeMark.subLocality ?? placeMark.name {
-                address.append(subLocality)
-            }
-            if let city = placeMark.locality ?? placeMark.subAdministrativeArea {
-                address.addingDevidingPrefixIfNeeded()
-                address.append(city)
-            }
-            if let state = placeMark.administrativeArea {
-                address.addingDevidingPrefixIfNeeded()
-                address.append(state)
-            }
-            if let country = placeMark.country {
-                address.addingDevidingPrefixIfNeeded()
-                address.append(country)
-            }
-            
-            marker.title = placeName
-            marker.snippet = address
-            marker.appearAnimation = .pop
-            marker.map = mapView
+            strongSelf.createTitle(on: marker, with: placemarks)
         }
     }
-}
-
-extension String {
-    mutating func addingDevidingPrefixIfNeeded() {
-        guard !self.isEmpty else { return }
-        self = self + ", "
+    
+    func createTitle(on marker: GMSMarker, with placemarks: [CLPlacemark]?) {
+        guard let placeMark = placemarks?.first else {
+            return
+        }
+        
+        guard let placeName = placeMark.name ??
+                placeMark.subThoroughfare ??
+                placeMark.thoroughfare else {
+                    return
+                }
+        
+        var address = ""
+        if let subLocality = placeMark.subLocality ?? placeMark.name {
+            address.append(subLocality)
+        }
+        if let city = placeMark.locality ?? placeMark.subAdministrativeArea {
+            address.addingDevidingPrefixIfNeeded()
+            address.append(city)
+        }
+        if let state = placeMark.administrativeArea {
+            address.addingDevidingPrefixIfNeeded()
+            address.append(state)
+        }
+        if let country = placeMark.country {
+            address.addingDevidingPrefixIfNeeded()
+            address.append(country)
+        }
+        
+        marker.title = placeName
+        marker.snippet = address
+        marker.appearAnimation = .pop
+        marker.map = mapView
     }
 }

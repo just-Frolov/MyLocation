@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0A1CF52D23CE35B4C9062DE7 /* Pods_MyLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB11570266E57647012FF3C7 /* Pods_MyLocation.framework */; };
+		B024544E2784900300DBA0F6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B024544D2784900300DBA0F6 /* Extensions.swift */; };
 		B0422973277DAA2400860F5B /* StartServicesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0422972277DAA2400860F5B /* StartServicesManager.swift */; };
 		B0422975277DE0A800860F5B /* NearbyPlacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0422974277DE0A800860F5B /* NearbyPlacesViewController.swift */; };
 		B0422977277DED6900860F5B /* PlacesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0422976277DED6900860F5B /* PlacesTableViewCell.swift */; };
@@ -27,6 +28,7 @@
 		34B6AC81A06924CCBFCE8405 /* Pods-MyLocation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyLocation.debug.xcconfig"; path = "Target Support Files/Pods-MyLocation/Pods-MyLocation.debug.xcconfig"; sourceTree = "<group>"; };
 		7D48AC35BE2F3508E8072E71 /* Pods-MyLocation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyLocation.release.xcconfig"; path = "Target Support Files/Pods-MyLocation/Pods-MyLocation.release.xcconfig"; sourceTree = "<group>"; };
 		AB11570266E57647012FF3C7 /* Pods_MyLocation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyLocation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B024544D2784900300DBA0F6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		B0422972277DAA2400860F5B /* StartServicesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartServicesManager.swift; sourceTree = "<group>"; };
 		B0422974277DE0A800860F5B /* NearbyPlacesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPlacesViewController.swift; sourceTree = "<group>"; };
 		B0422976277DED6900860F5B /* PlacesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesTableViewCell.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 				B042297E277E05FF00860F5B /* PlacesData.swift */,
 				B088D0242774C339007DB0F4 /* CustomLocationManager.swift */,
 				B0422972277DAA2400860F5B /* StartServicesManager.swift */,
+				B024544D2784900300DBA0F6 /* Extensions.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 				B05443BE27707EC500ACB794 /* AppDelegate.swift in Sources */,
 				B0422977277DED6900860F5B /* PlacesTableViewCell.swift in Sources */,
 				B088D0252774C339007DB0F4 /* CustomLocationManager.swift in Sources */,
+				B024544E2784900300DBA0F6 /* Extensions.swift in Sources */,
 				B042297D277E01BF00860F5B /* PlacesManager.swift in Sources */,
 				B05443C027707EC500ACB794 /* SceneDelegate.swift in Sources */,
 				B0422973277DAA2400860F5B /* StartServicesManager.swift in Sources */,

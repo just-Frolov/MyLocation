@@ -73,20 +73,16 @@ class NearbyPlacesViewController: UIViewController {
     }
     
     private func setupTableViewConstraints() {
-        let sizeNavBar: CGFloat = 44
-        
         tableView.snp.makeConstraints { (make) -> Void in
             make.width.bottom.equalTo(view)
-            make.top.equalTo(view).offset(sizeNavBar)
+            make.top.equalTo(view).offset(44)
         }
     }
     
     private func setupNoPlacesLabelConstraints() {
-        let heightNoPlacesLabel: CGFloat = 20
-        
         noPlacesLabel.snp.makeConstraints { (make) -> Void in
             make.width.equalTo(view)
-            make.height.equalTo(heightNoPlacesLabel)
+            make.height.equalTo(20)
             make.center.equalTo(view)
         }
     }
@@ -152,5 +148,3 @@ extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource
         return 80
     }
 }
-
-

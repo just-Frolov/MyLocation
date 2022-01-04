@@ -21,15 +21,16 @@ struct PlacesManager {
     
     //MARK: - Public -
     public func getPlaces(for location: String, completion: @escaping (Result<[Place], Error>) -> Void) {
-        let radiusString = "&radius=\(radius)000"  //multiply by 1000, since the radius is set in meters
+        let radiusInMeters = radius + "000" //multiply by 1000, since the radius is set in meters
+        let radiusString = "&radius=\(radiusInMeters)"
         let urlString = baseURL + apiKeyString + typeString + radiusString + location
         print(urlString)
-        AF.request(urlString).responseJSON { responce in
-            guard responce.error == nil else {
+        AF.request(urlString).responseJSON { response in
+            guard response.error == nil else {
                 completion(.failure(RequestError.failedResponseJSON))
                 return
             }
-            if let safeData = responce.data {
+            if let safeData = response.data {
                 if let places = parseJson(safeData) {
                     completion(.success(places))
                 } else {
