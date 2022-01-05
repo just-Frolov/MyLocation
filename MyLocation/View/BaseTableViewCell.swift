@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BaseTableViewCell: UITableViewCell, TableRegistable {
+class BaseTableViewCell: UITableViewCell, TableRegistable, CellRegistable {
 
 }
 
@@ -21,9 +21,21 @@ extension TableRegistable {
                            forCellReuseIdentifier: String(describing: self))
     }
     
-    static func cellRegister(in tableView: UITableView, cellForRowAt indexPath: IndexPath) -> Self {
+    static func xibRegister(in tableView: UITableView) {
+        tableView.register(UINib(nibName: String(describing: self), bundle: nil), forCellReuseIdentifier: String(describing: self))
+    }
+}
+
+protocol CellRegistable: UITableViewCell {
+   
+}
+
+extension CellRegistable {
+    static func cellRegister(in tableView: UITableView, for indexPath: IndexPath) -> Self {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: self.self),
                                                  for: indexPath) as! Self
         return cell
     }
 }
+
+
