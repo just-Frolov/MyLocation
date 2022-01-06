@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BaseTableViewCell: UITableViewCell, TableRegistable, CellRegistable {
+class BaseTableViewCell: UITableViewCell, TableRegistable, CellDeletable {
 
 }
 
@@ -26,13 +26,13 @@ extension TableRegistable {
     }
 }
 
-protocol CellRegistable: UITableViewCell {
+protocol CellDeletable: UITableViewCell {
    
 }
 
-extension CellRegistable {
-    static func cellRegister(in tableView: UITableView, for indexPath: IndexPath) -> Self {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: self.self),
+extension CellDeletable {
+    static func dequeueingReusableCell(in tableView: UITableView, for indexPath: IndexPath) -> Self {
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: Self.self),
                                                  for: indexPath) as! Self
         return cell
     }

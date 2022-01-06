@@ -7,7 +7,6 @@
 
 import SnapKit
 import JGProgressHUD
-import UIKit
 
 class NearbyPlacesViewController: UIViewController {
     //MARK: - UI Elements -
@@ -32,8 +31,8 @@ class NearbyPlacesViewController: UIViewController {
     private let spinner = JGProgressHUD(style: .dark)
     
     //MARK: - Variables -
-    public var currentLocation: String?
-    private var places: [Place]!
+    var currentLocation: String?
+    private var places: [Place] = []
     
     //MARK: - Life Cycle -
     override func viewDidLoad() {
@@ -43,13 +42,14 @@ class NearbyPlacesViewController: UIViewController {
         setupConstraints()
         showSpinner()
         fetchPlaces()
+        setupTableView()
     }
+    
     
     //MARK: - Private -
     private func setupNavigationBar() {
         let backButton = UIBarButtonItem()
-        let radius = PlacesManager.shared.radius
-        title = "Restaurants in a \(radius) km"
+        title = "Restaurants in a \(PlacesManager.shared.radius) km"
         backButton.title = "Map"
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         setupNavigationBarAppearence()
@@ -95,20 +95,17 @@ class NearbyPlacesViewController: UIViewController {
             noPlacesLabel.isHidden = false
             return
         }
-        let locationString = "&location=\(currentLocation)"
-        PlacesManager.shared.getPlaces(for: locationString) { [weak self] result in
+        PlacesManager.shared.getPlaces(for: currentLocation) { [weak self] result in
             guard let strongSelf = self else {return}
+            strongSelf.spinner.dismiss(animated: true)
             
             switch result {
             case .failure(let error):
-                print("Failed to get places: \(error)")
-                strongSelf.noPlacesLabel.isHidden = false
+                strongSelf.showErrorAlert(with: error)
             case .success(let placesArray):
                 strongSelf.places = placesArray
-                strongSelf.configureTableView(placesArray.isEmpty)
             }
-            
-            strongSelf.spinner.dismiss(animated: true)
+            strongSelf.configureTableView(strongSelf.places.isEmpty)
         }
     }
     
@@ -116,7 +113,6 @@ class NearbyPlacesViewController: UIViewController {
         self.noPlacesLabel.isHidden = !isEmpty
         self.tableView.isHidden = isEmpty
         self.tableView.reloadData()
-        self.setupTableView()
     }
     
     private func setupTableView() {
@@ -126,23 +122,36 @@ class NearbyPlacesViewController: UIViewController {
 }
 
 //MARK: - Extension -
-extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource {
+//MARK: - UITableViewDataSource -
+extension NearbyPlacesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return places.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let place = places[indexPath.row]
-        let cell = PlacesTableViewCell.cellRegister(in: tableView, for: indexPath)
+        let cell = PlacesTableViewCell.dequeueingReusableCell(in: tableView, for: indexPath)
         cell.configure(with: place)
         return cell
     }
-    
+}
+
+//MARK: - UITableViewDelegate -
+extension NearbyPlacesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
+    }
+}
+
+//MARK: - Alert -
+extension NearbyPlacesViewController {
+    private func showErrorAlert(with message: Error) {
+        let alert = UIAlertController(title: "Error", message: "Failed to get places: \(message)", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }

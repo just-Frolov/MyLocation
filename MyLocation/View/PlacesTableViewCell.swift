@@ -130,8 +130,8 @@ class PlacesTableViewCell: BaseTableViewCell {
         }
     }
     
-    //MARK: - Public -
-    public func configure(with model: Place) {
+    //MARK: - Internal -
+    func configure(with model: Place) {
         placeNameLabel.text = model.name
         placeAddressLabel.text = model.vicinity
         placeRatingLabel.text = String(model.rating ?? 0)

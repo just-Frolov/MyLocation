@@ -8,10 +8,10 @@
 import GoogleMaps
 import GooglePlaces
 
-class StartServicesManager {
+class GoogleServicesManager {
     private let apiKey = "AIzaSyDCA2pdlOV7pMWTVRGsKLaYYKPJxl1XC5g"
     
-    public func setApiKey() {
+    func startServices() {
         GMSServices.provideAPIKey(apiKey)
         GMSPlacesClient.provideAPIKey(apiKey)
     }

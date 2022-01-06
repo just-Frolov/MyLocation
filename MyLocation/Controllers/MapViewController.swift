@@ -5,8 +5,9 @@
 //  Created by Данил Фролов on 20.12.2021.
 //
 
-import UIKit
+import SnapKit
 import GoogleMaps
+import CoreLocation
 
 class MapViewController: UIViewController {
     //MARK: - UI Elements -
@@ -48,17 +49,17 @@ class MapViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupNavigationBar(isHidden: true, with: animated)
+        setupNavigationBar(isHidden: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        setupNavigationBar(isHidden: false, with: animated)
+        setupNavigationBar(isHidden: false)
     }
     
     //MARK: - Private -
-    private func setupNavigationBar(isHidden: Bool, with animated: Bool) {
-        navigationController?.setNavigationBarHidden(isHidden, animated: animated)
+    private func setupNavigationBar(isHidden: Bool) {
+        navigationController?.setNavigationBarHidden(isHidden, animated: true)
     }
     
     private func createMapWithDefaultLocation() {
@@ -123,6 +124,10 @@ extension MapViewController: CustomLocationManagerDelegate {
 
 extension MapViewController: GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
+       createMarker(at: coordinate)
+    }
+    
+    private func createMarker(at coordinate: CLLocationCoordinate2D) {
         let marker = GMSMarker(position: coordinate)
         let decoder = CLGeocoder()
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -137,7 +142,7 @@ extension MapViewController: GMSMapViewDelegate {
         }
     }
     
-    func createTitle(on marker: GMSMarker, with placemarks: [CLPlacemark]?) {
+    private func createTitle(on marker: GMSMarker, with placemarks: [CLPlacemark]?) {
         guard let placeMark = placemarks?.first else {
             return
         }
