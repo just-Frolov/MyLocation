@@ -101,7 +101,8 @@ class NearbyPlacesViewController: UIViewController {
             
             switch result {
             case .failure(let error):
-                strongSelf.showErrorAlert(with: error)
+                let message = "Failed to get places: \(error)"
+                strongSelf.showAlert(with: message)
             case .success(let placesArray):
                 strongSelf.places = placesArray
             }
@@ -149,9 +150,5 @@ extension NearbyPlacesViewController: UITableViewDelegate {
 
 //MARK: - Alert -
 extension NearbyPlacesViewController {
-    private func showErrorAlert(with message: Error) {
-        let alert = UIAlertController(title: "Error", message: "Failed to get places: \(message)", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
+    
 }

@@ -32,11 +32,8 @@ struct PlacesManager {
                 return
             }
             if let safeData = response.data {
-                if let places = parseJson(safeData) {
+                let places = parseJson(safeData) 
                     completion(.success(places))
-                } else {
-                    completion(.failure(RequestError.failedParseJson))
-                }
             } else {
                 completion(.failure(RequestError.failedResponseJSON))
             }
@@ -44,7 +41,7 @@ struct PlacesManager {
     }
     
     //MARK: - Private -
-    private func parseJson(_ data: Data) -> [Place]? {
+    private func parseJson(_ data: Data) -> [Place] {
         let decoder = JSONDecoder()
         do {
             let decodateData = try decoder.decode(PlacesData.self, from: data)

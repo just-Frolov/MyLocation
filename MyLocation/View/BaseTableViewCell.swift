@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BaseTableViewCell: UITableViewCell, TableRegistable, CellDeletable {
+class BaseTableViewCell: UITableViewCell, TableRegistable, CellReusable {
 
 }
 
@@ -26,11 +26,11 @@ extension TableRegistable {
     }
 }
 
-protocol CellDeletable: UITableViewCell {
+protocol CellReusable: UITableViewCell {
    
 }
 
-extension CellDeletable {
+extension CellReusable {
     static func dequeueingReusableCell(in tableView: UITableView, for indexPath: IndexPath) -> Self {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: Self.self),
                                                  for: indexPath) as! Self

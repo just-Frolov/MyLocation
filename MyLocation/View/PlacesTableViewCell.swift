@@ -132,6 +132,7 @@ class PlacesTableViewCell: BaseTableViewCell {
     
     //MARK: - Internal -
     func configure(with model: Place) {
+        imageView?.image = nil
         placeNameLabel.text = model.name
         placeAddressLabel.text = model.vicinity
         placeRatingLabel.text = String(model.rating ?? 0)
