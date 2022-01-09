@@ -24,6 +24,7 @@ class MapViewController: UIViewController {
     }()
     
     //MARK: - Variables -
+    var presenter: MapViewPresenterProtocol!
     private var mapView = GMSMapView()
     
     private var currentLocation: CLLocation? {
@@ -48,17 +49,17 @@ class MapViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupNavigationBar(isHidden: true, with: animated)
+        setupNavigationBar(isHidden: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        setupNavigationBar(isHidden: false, with: animated)
+        setupNavigationBar(isHidden: false)
     }
     
     //MARK: - Private -
-    private func setupNavigationBar(isHidden: Bool, with animated: Bool) {
-        navigationController?.setNavigationBarHidden(isHidden, animated: animated)
+    private func setupNavigationBar(isHidden: Bool) {
+        navigationController?.setNavigationBarHidden(isHidden, animated: true)
     }
     
     private func createMapWithDefaultLocation() {
@@ -170,4 +171,8 @@ extension MapViewController: GMSMapViewDelegate {
         marker.appearAnimation = .pop
         marker.map = mapView
     }
+}
+
+extension MapViewController: MapViewProtocol {
+    
 }

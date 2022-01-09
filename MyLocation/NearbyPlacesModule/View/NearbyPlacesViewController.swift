@@ -28,11 +28,12 @@ class NearbyPlacesViewController: UIViewController {
         return label
     }()
     
-    //MARK: - Private Constans -
-    private let spinner = JGProgressHUD(style: .dark)
+    //MARK: - Constans -
+    let spinner = JGProgressHUD(style: .dark)
     
     //MARK: - Variables -
-    public var currentLocation: String?
+    var presenter: NearbyPlacesPresenter!
+    var currentLocation: String?
     private var places: [Place]!
     
     //MARK: - Life Cycle -
@@ -145,4 +146,16 @@ extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
+}
+
+extension NearbyPlacesViewController: NearbyPlacesViewProtocol {
+    func success() {
+        //
+    }
+    
+    func failure(with error: Error) {
+        //
+    }
+    
+    
 }
