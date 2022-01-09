@@ -9,36 +9,38 @@ import Foundation
 import UIKit
 
 protocol NearbyPlacesViewProtocol: AnyObject {
-    func success()
+    func success(with places: [Place])
     func failure(with error: Error)
 }
 
 protocol NearbyPlacesViewPresenterProtocol: AnyObject {
-    init(view: NearbyPlacesViewController, networkService: PlacesManager, router: RouterProtocol)
-    func getNearbyPlaces(for location: String)
+    init(view: NearbyPlacesViewController, networkService: PlacesManager, router: RouterProtocol, location: String)
+    func getNearbyPlaces()
 }
 
 class NearbyPlacesPresenter: NearbyPlacesViewPresenterProtocol {
     weak var view: NearbyPlacesViewController?
     let networkService: PlacesManager
     var router: RouterProtocol
+    var currentLocation: String
     
-    required init(view: NearbyPlacesViewController, networkService: PlacesManager, router: RouterProtocol) {
+    required init(view: NearbyPlacesViewController, networkService: PlacesManager, router: RouterProtocol, location: String) {
         self.view = view
         self.networkService = networkService
         self.router = router
+        self.currentLocation = location
     }
     
-    func getNearbyPlaces(for location: String) {
-        PlacesManager.shared.getPlaces(for: location) { [weak self] result in
+    func getNearbyPlaces() {
+        let locationString = "&location=\(currentLocation)"
+        PlacesManager.shared.getPlaces(for: locationString) { [weak self] result in
             guard let strongSelf = self else {return}
-            //strongSelf.spinner.dismiss(animated: true)
             
             switch result {
             case .failure(let error):
                 strongSelf.view?.failure(with: error)
             case .success(let placesArray):
-                strongSelf.view?.success()
+                strongSelf.view?.success(with: placesArray)
             }
         }
     }

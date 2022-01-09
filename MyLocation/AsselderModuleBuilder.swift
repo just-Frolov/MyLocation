@@ -9,7 +9,7 @@ import UIKit
 
 protocol AsselderBuilderProtocol {
     func createMapModule(view: MapViewController, router: RouterProtocol) -> UIViewController
-    func createNearbyPlacesModule(view: NearbyPlacesViewController, coordinate: String?, router: RouterProtocol) -> UIViewController
+    func createNearbyPlacesModule(view: NearbyPlacesViewController, with location: String, router: RouterProtocol) -> UIViewController
 }
 
 class AsselderModuleBuilder: AsselderBuilderProtocol {
@@ -20,11 +20,12 @@ class AsselderModuleBuilder: AsselderBuilderProtocol {
         return view
     }
     
-    func createNearbyPlacesModule(view: NearbyPlacesViewController, coordinate: String?, router: RouterProtocol) -> UIViewController {
+    func createNearbyPlacesModule(view: NearbyPlacesViewController, with location: String, router: RouterProtocol) -> UIViewController {
         let networkService = PlacesManager()
         let presenter = NearbyPlacesPresenter(view: view,
                                               networkService: networkService,
-                                              router: router)
+                                              router: router,
+                                              location: location)
         view.presenter = presenter 
         return view
     }

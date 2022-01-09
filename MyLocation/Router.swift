@@ -14,7 +14,7 @@ protocol RouterMain {
 
 protocol RouterProtocol: RouterMain {
     func initialViewController()
-    func showNearbyPlaces(in location: String?)
+    func showNearbyPlaces(in location: String)
     func popToRoot()
 }
 
@@ -34,9 +34,9 @@ class Router: RouterProtocol {
         }
     }
     
-    func showNearbyPlaces(in location: String?) {
+    func showNearbyPlaces(in location: String) {
         if let navigationController = navigationController {
-            guard let detailViewController = assemblyBuilder?.createNearbyPlacesModule(view: NearbyPlacesViewController(), coordinate: location, router: self) else { return }
+            guard let detailViewController = assemblyBuilder?.createNearbyPlacesModule(view: NearbyPlacesViewController(), with: location, router: self) else { return }
             navigationController.pushViewController(detailViewController, animated: true)
         }
     }

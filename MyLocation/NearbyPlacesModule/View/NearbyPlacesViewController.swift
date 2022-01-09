@@ -29,12 +29,11 @@ class NearbyPlacesViewController: UIViewController {
     }()
     
     //MARK: - Constans -
-    let spinner = JGProgressHUD(style: .dark)
+    private let spinner = JGProgressHUD(style: .dark)
     
     //MARK: - Variables -
     var presenter: NearbyPlacesPresenter!
-    var currentLocation: String?
-    private var places: [Place]!
+    private var places: [Place] = []
     
     //MARK: - Life Cycle -
     override func viewDidLoad() {
@@ -43,7 +42,8 @@ class NearbyPlacesViewController: UIViewController {
         addSubViews()
         setupConstraints()
         showSpinner()
-        fetchPlaces()
+        presenter.getNearbyPlaces()
+        setupTableView()
     }
     
     //MARK: - Private -
@@ -91,33 +91,8 @@ class NearbyPlacesViewController: UIViewController {
         spinner.show(in: view)
     }
     
-    private func fetchPlaces() {
-        guard let currentLocation = currentLocation else {
-            noPlacesLabel.isHidden = false
-            return
-        }
-        let locationString = "&location=\(currentLocation)"
-        PlacesManager.shared.getPlaces(for: locationString) { [weak self] result in
-            guard let strongSelf = self else {return}
-            
-            switch result {
-            case .failure(let error):
-                print("Failed to get places: \(error)")
-                strongSelf.noPlacesLabel.isHidden = false
-            case .success(let placesArray):
-                strongSelf.places = placesArray
-                strongSelf.configureTableView(placesArray.isEmpty)
-            }
-            
-            strongSelf.spinner.dismiss(animated: true)
-        }
-    }
-    
-    private func configureTableView(_ isEmpty: Bool) {
-        self.noPlacesLabel.isHidden = !isEmpty
-        self.tableView.isHidden = isEmpty
-        self.tableView.reloadData()
-        self.setupTableView()
+    private func hideSpinner() {
+        spinner.dismiss(animated: true)
     }
     
     private func setupTableView() {
@@ -149,13 +124,19 @@ extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource
 }
 
 extension NearbyPlacesViewController: NearbyPlacesViewProtocol {
-    func success() {
-        //
+    func success(with places: [Place]) {
+        self.places = places
+        configureTableView(isEmpty: false)
     }
     
     func failure(with error: Error) {
-        //
+        configureTableView(isEmpty: true)
     }
     
-    
+    private func configureTableView(isEmpty: Bool) {
+        self.hideSpinner()
+        self.noPlacesLabel.isHidden = !isEmpty
+        self.tableView.isHidden = isEmpty
+        self.tableView.reloadData()
+    }
 }

@@ -105,13 +105,11 @@ class MapViewController: UIViewController {
     }
     
     @objc private func nearbyPlacesButtonTapped() {
-        let viewController = NearbyPlacesViewController()
         if let latitude = currentLocation?.coordinate.latitude,
            let longitude = currentLocation?.coordinate.longitude {
             let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
-            viewController.currentLocation = coordinateString
+            presenter.nearbyPlacesButtonTaped(location: coordinateString)
         }
-        navigationController?.pushViewController(viewController, animated: false)
     }
 }
 
