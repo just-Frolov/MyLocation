@@ -7,12 +7,12 @@
 
 import UIKit
 
-protocol AsselderBuilderProtocol {
+protocol AssemblerBuilderProtocol {
     func createMapModule(router: RouterProtocol) -> UIViewController
     func createNearbyPlacesModule(with location: String, router: RouterProtocol) -> UIViewController
 }
 
-class AsselderModuleBuilder: AsselderBuilderProtocol {
+class AssemblerModuleBuilder: AssemblerBuilderProtocol {
     func createMapModule(router: RouterProtocol) -> UIViewController {
         let view = MapViewController()
         let presenter = MapPresenter(view: view,

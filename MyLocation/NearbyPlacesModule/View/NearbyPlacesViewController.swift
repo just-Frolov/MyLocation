@@ -130,16 +130,16 @@ extension NearbyPlacesViewController: UITableViewDelegate {
 extension NearbyPlacesViewController: NearbyPlacesViewProtocol {
     func success(with places: [Place]) {
         self.places = places
-        configureTableView(isEmpty: false)
+        updateList(isEmpty: false)
     }
     
     func failure(with error: Error) {
-        configureTableView(isEmpty: true)
+        updateList(isEmpty: true)
         let message = "Failed to get places: \(error)"
         showAlert(with: message)
     }
     
-    private func configureTableView(isEmpty: Bool) {
+    private func updateList(isEmpty: Bool) {
         self.hideSpinner()
         self.noPlacesLabel.isHidden = !isEmpty
         self.tableView.isHidden = isEmpty

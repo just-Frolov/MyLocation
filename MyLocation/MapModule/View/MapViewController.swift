@@ -24,14 +24,14 @@ class MapViewController: UIViewController {
     }()
     
     //MARK: - Variables -
-    var mapView = GMSMapView()
+    private var mapView = GMSMapView()
     var presenter: MapViewPresenterProtocol!
     
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         createMapWithDefaultLocation()
-        presenter.configureMapView()
+        configureMapView()
         addSubViews()
         presenter.setupLocationManager()
         setupNearbyPlacesButtonConstraints()
@@ -58,6 +58,11 @@ class MapViewController: UIViewController {
                                               longitude: defaultLocation.coordinate.longitude,
                                               zoom: 15)
         mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
+    }
+    
+    private func configureMapView() {
+        setupMapView()
+        mapView.delegate = self
     }
     
     private func addSubViews() {
@@ -107,5 +112,12 @@ extension MapViewController: MapViewProtocol {
         marker.snippet = address
         marker.appearAnimation = .pop
         marker.map = mapView
+    }
+}
+
+//MARK: - GMSMapViewDelegate -
+extension MapViewController: GMSMapViewDelegate {
+    func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
+        presenter.createPlaceInfo(for: coordinate)
     }
 }

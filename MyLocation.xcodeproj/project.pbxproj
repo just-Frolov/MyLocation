@@ -24,7 +24,7 @@
 		B088D0252774C339007DB0F4 /* CustomLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B088D0242774C339007DB0F4 /* CustomLocationManager.swift */; };
 		B09EEB7C277E0B7C006785BA /* JGProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09EEB7B277E0B7C006785BA /* JGProgressHUD.framework */; };
 		B0D60B55278B80450052AF1E /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D60B54278B80450052AF1E /* Router.swift */; };
-		B0D60B57278B80950052AF1E /* AsselderModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D60B56278B80950052AF1E /* AsselderModuleBuilder.swift */; };
+		B0D60B57278B80950052AF1E /* AssemblerModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D60B56278B80950052AF1E /* AssemblerModuleBuilder.swift */; };
 		B0D60B61278B845E0052AF1E /* MapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D60B60278B845E0052AF1E /* MapPresenter.swift */; };
 		B0D60B63278B89870052AF1E /* NearbyPlacesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D60B62278B89870052AF1E /* NearbyPlacesPresenter.swift */; };
 		B0F6FE692784F85400BE90A2 /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F6FE682784F85400BE90A2 /* BaseTableViewCell.swift */; };
@@ -52,7 +52,7 @@
 		B088D0242774C339007DB0F4 /* CustomLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLocationManager.swift; sourceTree = "<group>"; };
 		B09EEB7B277E0B7C006785BA /* JGProgressHUD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JGProgressHUD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0D60B54278B80450052AF1E /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
-		B0D60B56278B80950052AF1E /* AsselderModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsselderModuleBuilder.swift; sourceTree = "<group>"; };
+		B0D60B56278B80950052AF1E /* AssemblerModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerModuleBuilder.swift; sourceTree = "<group>"; };
 		B0D60B60278B845E0052AF1E /* MapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPresenter.swift; sourceTree = "<group>"; };
 		B0D60B62278B89870052AF1E /* NearbyPlacesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPlacesPresenter.swift; sourceTree = "<group>"; };
 		B0F6FE682784F85400BE90A2 /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 				B05443BD27707EC500ACB794 /* AppDelegate.swift */,
 				B05443BF27707EC500ACB794 /* SceneDelegate.swift */,
 				B0D60B54278B80450052AF1E /* Router.swift */,
-				B0D60B56278B80950052AF1E /* AsselderModuleBuilder.swift */,
+				B0D60B56278B80950052AF1E /* AssemblerModuleBuilder.swift */,
 				B0D60B64278BA0DC0052AF1E /* Extensions */,
 				B0D60B58278B81CA0052AF1E /* ServiceLayer */,
 				B0D60B53278B7F050052AF1E /* NearbyPlacesModule */,
@@ -353,7 +353,7 @@
 				B05443BE27707EC500ACB794 /* AppDelegate.swift in Sources */,
 				B0422977277DED6900860F5B /* PlacesTableViewCell.swift in Sources */,
 				B0D60B55278B80450052AF1E /* Router.swift in Sources */,
-				B0D60B57278B80950052AF1E /* AsselderModuleBuilder.swift in Sources */,
+				B0D60B57278B80950052AF1E /* AssemblerModuleBuilder.swift in Sources */,
 				B088D0252774C339007DB0F4 /* CustomLocationManager.swift in Sources */,
 				B0F6FE692784F85400BE90A2 /* BaseTableViewCell.swift in Sources */,
 				B024544E2784900300DBA0F6 /* StringExtension.swift in Sources */,

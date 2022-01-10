@@ -9,7 +9,7 @@ import UIKit
 
 protocol RouterMain {
     var navigationController: UINavigationController? { get set }
-    var assemblyBuilder: AsselderBuilderProtocol? { get set }
+    var assemblyBuilder: AssemblerBuilderProtocol? { get set }
 }
 
 protocol RouterProtocol: RouterMain {
@@ -20,9 +20,9 @@ protocol RouterProtocol: RouterMain {
 
 class Router: RouterProtocol {
     var navigationController: UINavigationController?
-    var assemblyBuilder: AsselderBuilderProtocol?
+    var assemblyBuilder: AssemblerBuilderProtocol?
     
-    init(navigationController: UINavigationController, assemblyBuilder: AsselderBuilderProtocol) {
+    init(navigationController: UINavigationController, assemblyBuilder: AssemblerBuilderProtocol) {
         self.navigationController = navigationController
         self.assemblyBuilder = assemblyBuilder
     }
@@ -35,15 +35,11 @@ class Router: RouterProtocol {
     }
     
     func showNearbyPlaces(in location: String) {
-        if let navigationController = navigationController {
-            guard let detailViewController = assemblyBuilder?.createNearbyPlacesModule(with: location, router: self) else { return }
-            navigationController.pushViewController(detailViewController, animated: true)
-        }
+        guard let detailViewController = assemblyBuilder?.createNearbyPlacesModule(with: location, router: self) else { return }
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
     
     func popToRoot() {
-        if let navigationController = navigationController {
-            navigationController.popToRootViewController(animated: true)
-        }
+            navigationController?.popToRootViewController(animated: true)
     }
 }

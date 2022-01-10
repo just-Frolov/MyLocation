@@ -22,7 +22,9 @@ extension TableRegistable {
     }
     
     static func xibRegister(in tableView: UITableView) {
-        tableView.register(UINib(nibName: String(describing: self), bundle: nil), forCellReuseIdentifier: String(describing: self))
+        tableView.register(UINib(nibName: String(describing: self),
+                                 bundle: nil),
+                           forCellReuseIdentifier: String(describing: self))
     }
 }
 

@@ -9,9 +9,7 @@ import Foundation
 import GoogleMaps
 
 protocol MapViewProtocol: AnyObject {
-    var mapView: GMSMapView {get set}
     func showCurrentLocation(_ location: CLLocation)
-    func setupMapView()
     func showMapView()
     func createMarkerWithTitle(placeName: String, address: String, at coordinate: CLLocationCoordinate2D)
 }
@@ -20,7 +18,6 @@ protocol MapViewPresenterProtocol: AnyObject {
     var currentLocation: CLLocation? { get set }
     init(view: MapViewProtocol, router: RouterProtocol)
     func setupLocationManager()
-    func configureMapView()
     func createPlaceInfo(for coordinate: CLLocationCoordinate2D)
     func nearbyPlacesButtonTapped()
 }
@@ -48,31 +45,12 @@ class MapPresenter: NSObject, MapViewPresenterProtocol {
         CustomLocationManager.shared.startTracking()
     }
     
-    func configureMapView() {
-        view?.setupMapView()
-        view?.mapView.delegate = self
-    }
-    
     func nearbyPlacesButtonTapped() {
         if let latitude = currentLocation?.coordinate.latitude,
            let longitude = currentLocation?.coordinate.longitude {
             let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
             router?.showNearbyPlaces(in: coordinateString)
         }
-    }
-}
-
-//MARK: - CustomLocationManagerDelegate -
-extension MapPresenter: CustomLocationManagerDelegate {
-    func didUpdateLocation(_ location: CLLocation) {
-        currentLocation = location
-    }
-}
-
-//MARK: - GMSMapViewDelegate -
-extension MapPresenter: GMSMapViewDelegate {
-    func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-        createPlaceInfo(for: coordinate)
     }
     
     func createPlaceInfo(for coordinate: CLLocationCoordinate2D) {
@@ -110,3 +88,15 @@ extension MapPresenter: GMSMapViewDelegate {
         }
     }
 }
+
+//MARK: - CustomLocationManagerDelegate -
+extension MapPresenter: CustomLocationManagerDelegate {
+    func didUpdateLocation(_ location: CLLocation) {
+        currentLocation = location
+    }
+}
+
+
+    
+    
+

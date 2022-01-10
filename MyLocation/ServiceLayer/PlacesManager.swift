@@ -25,7 +25,6 @@ struct PlacesManager {
         let radiusString = "&radius=\(radiusInMeters)"
         let locationString = "&location=\(location)"
         let urlString = baseURL + apiKeyString + typeString + radiusString + locationString
-        print(urlString)
         AF.request(urlString).responseJSON { response in
             guard response.error == nil else {
                 completion(.failure(RequestError.failedResponseJSON))

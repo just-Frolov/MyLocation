@@ -61,6 +61,24 @@ class PlacesTableViewCell: BaseTableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - Internal -
+    func configure(with model: Place) {
+        imageView?.image = nil
+        placeNameLabel.text = model.name
+        placeAddressLabel.text = model.vicinity
+        placeRatingLabel.text = String(model.rating ?? 0)
+        
+        let url = URL(string: model.icon)
+        placeIcon.kf.setImage(with: url)
+        
+        guard let isOpen = model.openingHours else {
+            placeIsOpenLabel.text = "No Information"
+            return
+        }
+        
+        placeIsOpenLabel.text = isOpen.openNow ?  "Open" : "Close"
+    }
+    
     //MARK: - Private -
     private func addSubviews() {
         contentView.addSubview(placeIcon)
@@ -127,23 +145,5 @@ class PlacesTableViewCell: BaseTableViewCell {
             make.right.equalTo(ratingAndOpenInfoView)
             make.height.equalTo(ratingAndOpenInfoView)
         }
-    }
-    
-    //MARK: - Internal -
-    func configure(with model: Place) {
-        imageView?.image = nil
-        placeNameLabel.text = model.name
-        placeAddressLabel.text = model.vicinity
-        placeRatingLabel.text = String(model.rating ?? 0)
-        
-        let url = URL(string: model.icon)
-        placeIcon.kf.setImage(with: url)
-        
-        guard let isOpen = model.openingHours else {
-            placeIsOpenLabel.text = "No Information"
-            return
-        }
-        
-        placeIsOpenLabel.text = isOpen.openNow ?  "Open" : "Close"
     }
 }
