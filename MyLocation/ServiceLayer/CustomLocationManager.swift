@@ -1,11 +1,10 @@
 //
-//  LocationManager.swift
+//  CustomLocationManager.swift
 //  MyLocation
 //
 //  Created by Данил Фролов on 23.12.2021.
 //
 
-import Foundation
 import CoreLocation
 
 protocol CustomLocationManagerDelegate: AnyObject {
@@ -13,7 +12,7 @@ protocol CustomLocationManagerDelegate: AnyObject {
 }
 
 class CustomLocationManager: NSObject, CLLocationManagerDelegate {
-    //MARK: - Private Constants -
+    //MARK: - Static Constants -
     static let shared = CustomLocationManager()
 
     //MARK: - Variables -
@@ -25,6 +24,7 @@ class CustomLocationManager: NSObject, CLLocationManagerDelegate {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
     }
     
     //MARK: - Internal -
