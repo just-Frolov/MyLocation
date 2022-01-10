@@ -74,7 +74,7 @@ class MapViewController: UIViewController {
     }
     
     @objc private func nearbyPlacesButtonTapped() {
-            presenter.nearbyPlacesButtonTapped()
+        presenter.nearbyPlacesButtonTapped()
     }
 }
 

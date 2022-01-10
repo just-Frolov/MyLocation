@@ -32,7 +32,7 @@ class NearbyPlacesPresenter: NearbyPlacesViewPresenterProtocol {
     }
     
     func getNearbyPlaces() {
-        PlacesManager.shared.getPlaces(for: currentLocation) { [weak self] result in
+        networkService.getPlaces(for: currentLocation) { [weak self] result in
             guard let strongSelf = self else {return}
             
             switch result {
