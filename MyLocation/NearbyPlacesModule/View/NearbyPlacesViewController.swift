@@ -49,8 +49,7 @@ class NearbyPlacesViewController: UIViewController {
     //MARK: - Private -
     private func setupNavigationBar() {
         let backButton = UIBarButtonItem()
-        let radius = PlacesManager.shared.radius
-        title = "Restaurants in a \(radius) km"
+        title = "Restaurants in a \(PlacesManager.shared.radius) km"
         backButton.title = "Map"
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         setupNavigationBarAppearence()
@@ -102,18 +101,22 @@ class NearbyPlacesViewController: UIViewController {
 }
 
 //MARK: - Extension -
-extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource {
+//MARK: - UITableViewDataSource -
+extension NearbyPlacesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return places.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let place = places[indexPath.row]
-        let cell = PlacesTableViewCell.cellRegister(in: tableView, for: indexPath)
+        let cell = PlacesTableViewCell.dequeueingReusableCell(in: tableView, for: indexPath)
         cell.configure(with: place)
         return cell
     }
-    
+}
+
+//MARK: - UITableViewDelegate -
+extension NearbyPlacesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -123,6 +126,7 @@ extension NearbyPlacesViewController: UITableViewDelegate, UITableViewDataSource
     }
 }
 
+//MARK: - NearbyPlacesViewProtocol -
 extension NearbyPlacesViewController: NearbyPlacesViewProtocol {
     func success(with places: [Place]) {
         self.places = places
@@ -131,6 +135,8 @@ extension NearbyPlacesViewController: NearbyPlacesViewProtocol {
     
     func failure(with error: Error) {
         configureTableView(isEmpty: true)
+        let message = "Failed to get places: \(error)"
+        showAlert(with: message)
     }
     
     private func configureTableView(isEmpty: Bool) {

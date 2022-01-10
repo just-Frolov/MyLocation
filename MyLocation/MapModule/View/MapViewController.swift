@@ -108,20 +108,26 @@ class MapViewController: UIViewController {
         if let latitude = currentLocation?.coordinate.latitude,
            let longitude = currentLocation?.coordinate.longitude {
             let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
-            presenter.nearbyPlacesButtonTaped(location: coordinateString)
+            presenter.nearbyPlacesButtonTapped(location: coordinateString)
         }
     }
 }
 
 //MARK: - Extension -
+//MARK: - CustomLocationManagerDelegate -
 extension MapViewController: CustomLocationManagerDelegate {
     func didUpdateLocation(_ location: CLLocation) {
         currentLocation = location
     }
 }
 
+//MARK: - GMSMapViewDelegate -
 extension MapViewController: GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
+       createMarker(at: coordinate)
+    }
+    
+    func createMarker(at coordinate: CLLocationCoordinate2D) {
         let marker = GMSMarker(position: coordinate)
         let decoder = CLGeocoder()
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -171,6 +177,7 @@ extension MapViewController: GMSMapViewDelegate {
     }
 }
 
+//MARK: - MapViewProtocol -
 extension MapViewController: MapViewProtocol {
     
 }

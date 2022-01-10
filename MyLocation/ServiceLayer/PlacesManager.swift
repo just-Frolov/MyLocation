@@ -11,19 +11,20 @@ struct PlacesManager {
     //MARK: - Static Constants -
     static let shared = PlacesManager()
     
-    //MARK: - Public Constants -
-    public let radius = "5"
+    //MARK: - Internal Constants -
+    let radius = 5
     
     //MARK: - Private Constants -
     private let baseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     private let apiKeyString = "?key=AIzaSyDCA2pdlOV7pMWTVRGsKLaYYKPJxl1XC5g"
     private let typeString = "&type=restaurant"
     
-    //MARK: - Public -
-    public func getPlaces(for location: String, completion: @escaping (Result<[Place], Error>) -> Void) {
-        let radiusInMeters = radius + "000" //multiply by 1000, since the radius is set in meters
+    //MARK: - Internal -
+    func getPlaces(for location: String, completion: @escaping (Result<[Place], Error>) -> Void) {
+        let radiusInMeters = radius * 1000 //multiply by 1000, since the radius is set in meters
         let radiusString = "&radius=\(radiusInMeters)"
-        let urlString = baseURL + apiKeyString + typeString + radiusString + location
+        let locationString = "&location=\(location)"
+        let urlString = baseURL + apiKeyString + typeString + radiusString + locationString
         print(urlString)
         AF.request(urlString).responseJSON { response in
             guard response.error == nil else {
@@ -31,11 +32,8 @@ struct PlacesManager {
                 return
             }
             if let safeData = response.data {
-                if let places = parseJson(safeData) {
-                    completion(.success(places))
-                } else {
-                    completion(.failure(RequestError.failedParseJson))
-                }
+                let places = parseJson(safeData) 
+                completion(.success(places))
             } else {
                 completion(.failure(RequestError.failedResponseJSON))
             }
@@ -43,13 +41,13 @@ struct PlacesManager {
     }
     
     //MARK: - Private -
-    private func parseJson(_ data: Data) -> [Place]? {
+    private func parseJson(_ data: Data) -> [Place] {
         let decoder = JSONDecoder()
         do {
             let decodateData = try decoder.decode(PlacesData.self, from: data)
             return decodateData.results
         } catch {
-            return nil
+            return []
         }
     }
     

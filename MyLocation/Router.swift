@@ -29,14 +29,14 @@ class Router: RouterProtocol {
     
     func initialViewController() {
         if let navigationController = navigationController {
-            guard let viewController = assemblyBuilder?.createMapModule(view: MapViewController(), router: self) else { return }
+            guard let viewController = assemblyBuilder?.createMapModule(router: self) else { return }
             navigationController.viewControllers = [viewController]
         }
     }
     
     func showNearbyPlaces(in location: String) {
         if let navigationController = navigationController {
-            guard let detailViewController = assemblyBuilder?.createNearbyPlacesModule(view: NearbyPlacesViewController(), with: location, router: self) else { return }
+            guard let detailViewController = assemblyBuilder?.createNearbyPlacesModule(with: location, router: self) else { return }
             navigationController.pushViewController(detailViewController, animated: true)
         }
     }

@@ -11,7 +11,7 @@ import GooglePlaces
 class GoogleServicesManager {
     private let apiKey = "AIzaSyDCA2pdlOV7pMWTVRGsKLaYYKPJxl1XC5g"
     
-    public func startService() {
+    func startService() {
         GMSServices.provideAPIKey(apiKey)
         GMSPlacesClient.provideAPIKey(apiKey)
     }

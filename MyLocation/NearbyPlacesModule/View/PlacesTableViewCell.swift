@@ -9,7 +9,6 @@ import Kingfisher
 import SnapKit
 
 class PlacesTableViewCell: BaseTableViewCell {
-    
     //MARK: - UI Elements -
     private lazy var placeIcon: UIImageView = {
         let image = UIImageView()
@@ -130,8 +129,9 @@ class PlacesTableViewCell: BaseTableViewCell {
         }
     }
     
-    //MARK: - Public -
-    public func configure(with model: Place) {
+    //MARK: - Internal -
+    func configure(with model: Place) {
+        imageView?.image = nil
         placeNameLabel.text = model.name
         placeAddressLabel.text = model.vicinity
         placeRatingLabel.text = String(model.rating ?? 0)

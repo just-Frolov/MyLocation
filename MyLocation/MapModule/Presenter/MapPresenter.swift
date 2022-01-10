@@ -13,7 +13,7 @@ protocol MapViewProtocol: AnyObject {
 
 protocol MapViewPresenterProtocol: AnyObject {
     init(view: MapViewProtocol, router: RouterProtocol)
-    func nearbyPlacesButtonTaped(location: String)
+    func nearbyPlacesButtonTapped(location: String)
 }
 
 class MapPresenter: MapViewPresenterProtocol {
@@ -25,7 +25,7 @@ class MapPresenter: MapViewPresenterProtocol {
         self.router = router
     }
     
-    public func nearbyPlacesButtonTaped(location: String) {
+    func nearbyPlacesButtonTapped(location: String) {
         router?.showNearbyPlaces(in: location)
     }
 }

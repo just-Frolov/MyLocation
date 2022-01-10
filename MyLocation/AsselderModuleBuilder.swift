@@ -8,19 +8,21 @@
 import UIKit
 
 protocol AsselderBuilderProtocol {
-    func createMapModule(view: MapViewController, router: RouterProtocol) -> UIViewController
-    func createNearbyPlacesModule(view: NearbyPlacesViewController, with location: String, router: RouterProtocol) -> UIViewController
+    func createMapModule(router: RouterProtocol) -> UIViewController
+    func createNearbyPlacesModule(with location: String, router: RouterProtocol) -> UIViewController
 }
 
 class AsselderModuleBuilder: AsselderBuilderProtocol {
-    func createMapModule(view: MapViewController, router: RouterProtocol) -> UIViewController {
+    func createMapModule(router: RouterProtocol) -> UIViewController {
+        let view = MapViewController()
         let presenter = MapPresenter(view: view,
                                       router: router)
         view.presenter = presenter
         return view
     }
     
-    func createNearbyPlacesModule(view: NearbyPlacesViewController, with location: String, router: RouterProtocol) -> UIViewController {
+    func createNearbyPlacesModule(with location: String, router: RouterProtocol) -> UIViewController {
+        let view = NearbyPlacesViewController()
         let networkService = PlacesManager()
         let presenter = NearbyPlacesPresenter(view: view,
                                               networkService: networkService,
