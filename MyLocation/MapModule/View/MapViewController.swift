@@ -24,26 +24,16 @@ class MapViewController: UIViewController {
     }()
     
     //MARK: - Variables -
+    var mapView = GMSMapView()
     var presenter: MapViewPresenterProtocol!
-    private var mapView = GMSMapView()
-    
-    private var currentLocation: CLLocation? {
-        didSet {
-            if let location = currentLocation,
-               oldValue == nil {
-                setupCurrentLocation(location)
-                mapView.isHidden = false
-            }
-        }
-    }
     
     //MARK: - Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
         createMapWithDefaultLocation()
-        configureMapView()
+        presenter.configureMapView()
         addSubViews()
-        setupLocationManager()
+        presenter.setupLocationManager()
         setupNearbyPlacesButtonConstraints()
     }
     
@@ -70,14 +60,6 @@ class MapViewController: UIViewController {
         mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
     }
     
-    private func configureMapView() {
-        mapView.settings.myLocationButton = true
-        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView.isMyLocationEnabled = true
-        mapView.delegate = self
-        mapView.isHidden = true
-    }
-    
     private func addSubViews() {
         view.addSubview(mapView)
         view.addSubview(nearbyPlacesButton)
@@ -91,12 +73,22 @@ class MapViewController: UIViewController {
         }
     }
     
-    private func setupLocationManager() {
-        CustomLocationManager.shared.delegate = self
-        CustomLocationManager.shared.startTracking()
+    @objc private func nearbyPlacesButtonTapped() {
+            presenter.nearbyPlacesButtonTapped()
+    }
+}
+
+//MARK: - Extension -
+//MARK: - MapViewProtocol -
+extension MapViewController: MapViewProtocol {
+    func setupMapView() {
+        mapView.settings.myLocationButton = true
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView.isMyLocationEnabled = true
+        mapView.isHidden = true
     }
     
-    private func setupCurrentLocation(_ location: CLLocation) {
+    func showCurrentLocation(_ location: CLLocation) {
         let coordinate = location.coordinate
         let camera = GMSCameraPosition.camera(withLatitude: coordinate.latitude,
                                               longitude: coordinate.longitude,
@@ -104,80 +96,16 @@ class MapViewController: UIViewController {
         mapView.animate(to: camera)
     }
     
-    @objc private func nearbyPlacesButtonTapped() {
-        if let latitude = currentLocation?.coordinate.latitude,
-           let longitude = currentLocation?.coordinate.longitude {
-            let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
-            presenter.nearbyPlacesButtonTapped(location: coordinateString)
-        }
-    }
-}
-
-//MARK: - Extension -
-//MARK: - CustomLocationManagerDelegate -
-extension MapViewController: CustomLocationManagerDelegate {
-    func didUpdateLocation(_ location: CLLocation) {
-        currentLocation = location
-    }
-}
-
-//MARK: - GMSMapViewDelegate -
-extension MapViewController: GMSMapViewDelegate {
-    func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-       createMarker(at: coordinate)
+    func showMapView() {
+        mapView.isHidden = false
     }
     
-    func createMarker(at coordinate: CLLocationCoordinate2D) {
+    func createMarkerWithTitle(placeName: String, address: String, at coordinate: CLLocationCoordinate2D) {
         let marker = GMSMarker(position: coordinate)
-        let decoder = CLGeocoder()
-        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        
         mapView.clear()
-        
-        decoder.reverseGeocodeLocation(location) { [weak self] placemarks, _ in
-            guard let strongSelf = self else {
-                return
-            }
-            strongSelf.createTitle(on: marker, with: placemarks)
-        }
-    }
-    
-    func createTitle(on marker: GMSMarker, with placemarks: [CLPlacemark]?) {
-        guard let placeMark = placemarks?.first else {
-            return
-        }
-        
-        guard let placeName = placeMark.name ??
-                placeMark.subThoroughfare ??
-                placeMark.thoroughfare else {
-                    return
-                }
-        
-        var address = ""
-        if let subLocality = placeMark.subLocality ?? placeMark.name {
-            address.append(subLocality)
-        }
-        if let city = placeMark.locality ?? placeMark.subAdministrativeArea {
-            address.addingDevidingPrefixIfNeeded()
-            address.append(city)
-        }
-        if let state = placeMark.administrativeArea {
-            address.addingDevidingPrefixIfNeeded()
-            address.append(state)
-        }
-        if let country = placeMark.country {
-            address.addingDevidingPrefixIfNeeded()
-            address.append(country)
-        }
-        
         marker.title = placeName
         marker.snippet = address
         marker.appearAnimation = .pop
         marker.map = mapView
     }
-}
-
-//MARK: - MapViewProtocol -
-extension MapViewController: MapViewProtocol {
-    
 }
