@@ -33,7 +33,7 @@ class MapViewController: UIViewController {
         createMapWithDefaultLocation()
         configureMapView()
         addSubViews()
-        presenter.setupLocationManager()
+        presenter.viewDidLoad()
         setupNearbyPlacesButtonConstraints()
     }
     

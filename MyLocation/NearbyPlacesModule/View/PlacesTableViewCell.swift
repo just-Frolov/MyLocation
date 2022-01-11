@@ -32,7 +32,7 @@ class PlacesTableViewCell: BaseTableViewCell {
     }()
     
     private lazy var ratingAndOpenInfoView: UIView = {
-        let view = UIView()
+        let view = UIStackView()
         view.addSubview(placeIsOpenLabel)
         view.addSubview(placeRatingLabel)
         return view

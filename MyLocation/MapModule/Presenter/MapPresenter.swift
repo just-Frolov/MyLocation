@@ -17,9 +17,9 @@ protocol MapViewProtocol: AnyObject {
 protocol MapViewPresenterProtocol: AnyObject {
     var currentLocation: CLLocation? { get set }
     init(view: MapViewProtocol, router: RouterProtocol)
-    func setupLocationManager()
     func createPlaceInfo(for coordinate: CLLocationCoordinate2D)
     func nearbyPlacesButtonTapped()
+    func viewDidLoad()
 }
 
 class MapPresenter: NSObject, MapViewPresenterProtocol {
@@ -36,21 +36,18 @@ class MapPresenter: NSObject, MapViewPresenterProtocol {
     }
     
     required init(view: MapViewProtocol, router: RouterProtocol) {
+        super.init()
         self.view = view
         self.router = router
     }
     
-    func setupLocationManager() {
-        CustomLocationManager.shared.delegate = self
-        CustomLocationManager.shared.startTracking()
+    func viewDidLoad() {
+        self.setupLocationManager()
     }
     
+    //MARK: - Private -
     func nearbyPlacesButtonTapped() {
-        if let latitude = currentLocation?.coordinate.latitude,
-           let longitude = currentLocation?.coordinate.longitude {
-            let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
-            router?.showNearbyPlaces(in: coordinateString)
-        }
+        router?.showNearbyPlaces(in: currentLocation)
     }
     
     func createPlaceInfo(for coordinate: CLLocationCoordinate2D) {
@@ -86,6 +83,12 @@ class MapPresenter: NSObject, MapViewPresenterProtocol {
             }
             self?.view?.createMarkerWithTitle(placeName: placeName, address: address, at: coordinate)
         }
+    }
+    
+    //MARK: - Private -
+    private func setupLocationManager() {
+        CustomLocationManager.shared.delegate = self
+        CustomLocationManager.shared.startTracking()
     }
 }
 

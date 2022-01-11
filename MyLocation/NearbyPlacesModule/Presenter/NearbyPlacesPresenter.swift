@@ -7,14 +7,15 @@
 
 import Foundation
 import UIKit
+import CoreLocation
 
 protocol NearbyPlacesViewProtocol: AnyObject {
-    func success(with places: [Place])
-    func failure(with error: Error)
+    func gotNearbyPlaces(_ places: [Place])
+    func gotError(with message: Error)
 }
 
 protocol NearbyPlacesViewPresenterProtocol: AnyObject {
-    init(view: NearbyPlacesViewController, networkService: PlacesManager, router: RouterProtocol, location: String)
+    init(view: NearbyPlacesViewController, networkService: PlacesManager, router: RouterProtocol, location: CLLocation?)
     func getNearbyPlaces()
 }
 
@@ -22,9 +23,9 @@ class NearbyPlacesPresenter: NearbyPlacesViewPresenterProtocol {
     weak var view: NearbyPlacesViewController?
     let networkService: PlacesManager
     var router: RouterProtocol
-    var currentLocation: String
+    var currentLocation: CLLocation?
     
-    required init(view: NearbyPlacesViewController, networkService: PlacesManager, router: RouterProtocol, location: String) {
+    required init(view: NearbyPlacesViewController, networkService: PlacesManager, router: RouterProtocol, location: CLLocation?) {
         self.view = view
         self.networkService = networkService
         self.router = router
@@ -37,9 +38,9 @@ class NearbyPlacesPresenter: NearbyPlacesViewPresenterProtocol {
             
             switch result {
             case .failure(let error):
-                strongSelf.view?.failure(with: error)
+                strongSelf.view?.gotError(with: error)
             case .success(let placesArray):
-                strongSelf.view?.success(with: placesArray)
+                strongSelf.view?.gotNearbyPlaces(placesArray)
             }
         }
     }

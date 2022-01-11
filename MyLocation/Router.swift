@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 protocol RouterMain {
     var navigationController: UINavigationController? { get set }
@@ -14,7 +15,7 @@ protocol RouterMain {
 
 protocol RouterProtocol: RouterMain {
     func initialViewController()
-    func showNearbyPlaces(in location: String)
+    func showNearbyPlaces(in location: CLLocation?)
     func popToRoot()
 }
 
@@ -34,7 +35,7 @@ class Router: RouterProtocol {
         }
     }
     
-    func showNearbyPlaces(in location: String) {
+    func showNearbyPlaces(in location: CLLocation?) {
         guard let detailViewController = assemblyBuilder?.createNearbyPlacesModule(with: location, router: self) else { return }
         navigationController?.pushViewController(detailViewController, animated: true)
     }

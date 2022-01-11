@@ -6,10 +6,16 @@
 //
 
 import Alamofire
+import CoreLocation
 
-struct PlacesManager {
+protocol PlacesManagerProtocol {
+    func getPlaces(for currentLocation: CLLocation?, completion: @escaping (Result<[Place], Error>) -> Void)
+}
+
+class PlacesManager: PlacesManagerProtocol {
     //MARK: - Static Constants -
     static let shared = PlacesManager()
+    private init() {}
     
     //MARK: - Internal Constants -
     let radius = 5
@@ -20,10 +26,13 @@ struct PlacesManager {
     private let typeString = "&type=restaurant"
     
     //MARK: - Internal -
-    func getPlaces(for location: String, completion: @escaping (Result<[Place], Error>) -> Void) {
+    func getPlaces(for currentLocation: CLLocation?, completion: @escaping (Result<[Place], Error>) -> Void) {
+        guard let latitude = currentLocation?.coordinate.latitude,
+              let longitude = currentLocation?.coordinate.longitude else { return }
+        let coordinateString = "\(latitude.debugDescription),\(longitude.debugDescription)"
         let radiusInMeters = radius * 1000 //multiply by 1000, since the radius is set in meters
         let radiusString = "&radius=\(radiusInMeters)"
-        let locationString = "&location=\(location)"
+        let locationString = "&location=\(coordinateString)"
         let urlString = baseURL + apiKeyString + typeString + radiusString + locationString
         AF.request(urlString).responseJSON { response in
             guard response.error == nil else {
@@ -31,7 +40,7 @@ struct PlacesManager {
                 return
             }
             if let safeData = response.data {
-                let places = parseJson(safeData) 
+                let places = self.parseJson(safeData)
                 completion(.success(places))
             } else {
                 completion(.failure(RequestError.failedResponseJSON))

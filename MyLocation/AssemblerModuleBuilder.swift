@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import CoreLocation
 
 protocol AssemblerBuilderProtocol {
     func createMapModule(router: RouterProtocol) -> UIViewController
-    func createNearbyPlacesModule(with location: String, router: RouterProtocol) -> UIViewController
+    func createNearbyPlacesModule(with location: CLLocation?, router: RouterProtocol) -> UIViewController
 }
 
 class AssemblerModuleBuilder: AssemblerBuilderProtocol {
@@ -21,11 +22,10 @@ class AssemblerModuleBuilder: AssemblerBuilderProtocol {
         return view
     }
     
-    func createNearbyPlacesModule(with location: String, router: RouterProtocol) -> UIViewController {
+    func createNearbyPlacesModule(with location: CLLocation?, router: RouterProtocol) -> UIViewController {
         let view = NearbyPlacesViewController()
-        let networkService = PlacesManager()
         let presenter = NearbyPlacesPresenter(view: view,
-                                              networkService: networkService,
+                                              networkService: PlacesManager.shared,
                                               router: router,
                                               location: location)
         view.presenter = presenter 
