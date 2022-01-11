@@ -66,7 +66,6 @@ class PlacesManager: PlacesManagerProtocol {
     
     private enum GetImageError: Error {
         case failedCreateUrl
-        case failedCreateData
         case failedCreateImage
     }
 }

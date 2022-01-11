@@ -7,6 +7,7 @@
 
 import Kingfisher
 import SnapKit
+import UIKit
 
 class PlacesTableViewCell: BaseTableViewCell {
     //MARK: - UI Elements -
@@ -31,7 +32,7 @@ class PlacesTableViewCell: BaseTableViewCell {
         return label
     }()
     
-    private lazy var ratingAndOpenInfoView: UIView = {
+    private lazy var ratingAndOpenInfoView: UIStackView = {
         let view = UIStackView()
         view.addSubview(placeIsOpenLabel)
         view.addSubview(placeRatingLabel)
