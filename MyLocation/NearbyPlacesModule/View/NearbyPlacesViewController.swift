@@ -128,12 +128,12 @@ extension NearbyPlacesViewController: UITableViewDelegate {
 
 //MARK: - NearbyPlacesViewProtocol -
 extension NearbyPlacesViewController: NearbyPlacesViewProtocol {
-    func gotNearbyPlaces(_ places: [Place]) {
+    func setNearbyPlaces(_ places: [Place]) {
         self.places = places
         updateList(isEmpty: false)
     }
     
-    func gotError(with error: Error) {
+    func showErrorAlert(with error: String) {
         updateList(isEmpty: true)
         let message = "Failed to get places: \(error)"
         showAlert(with: message)

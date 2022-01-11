@@ -25,7 +25,6 @@ class AssemblerModuleBuilder: AssemblerBuilderProtocol {
     func createNearbyPlacesModule(with location: CLLocation?, router: RouterProtocol) -> UIViewController {
         let view = NearbyPlacesViewController()
         let presenter = NearbyPlacesPresenter(view: view,
-                                              networkService: PlacesManager.shared,
                                               router: router,
                                               location: location)
         view.presenter = presenter 
